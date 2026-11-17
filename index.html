@@ -1,0 +1,1629 @@
+<!doctype html>
+<html lang="th" x-data="sems()" x-init="init()" :class="{ 'dark': dark }" @scroll.window="scrolled = window.scrollY > 24">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<title>SEMS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>tailwind.config = { corePlugins: { preflight: true } }</script>
+<style>
+:root {
+  --bg:#f2f2f7; --bg2:#ffffff; --bg3:#f2f2f7;
+  --fill:rgba(118,118,128,.12); --fill2:rgba(120,120,128,.16); --fill3:rgba(118,118,128,.07);
+  --label:#000; --label2:rgba(60,60,67,.6); --label3:rgba(60,60,67,.3); --sep:rgba(60,60,67,.22);
+  --blue:#007aff; --green:#34c759; --red:#ff3b30; --orange:#ff9500; --yellow:#ffcc00; --purple:#af52de; --indigo:#5856d6; --teal:#30b0c7; --gray:#8e8e93; --pink:#ff2d55;
+  --yellow-text:#a87b00;
+  --material:rgba(242,242,247,.78); --glass:rgba(255,255,255,.62); --glass-edge:rgba(255,255,255,.9);
+  --sidebar:#ebebf0; --seg-on:#ffffff; --sheet:#f2f2f7;
+  color-scheme: light;
+}
+html.dark {
+  --bg:#000; --bg2:#1c1c1e; --bg3:#2c2c2e;
+  --fill:rgba(118,118,128,.24); --fill2:rgba(120,120,128,.32); --fill3:rgba(118,118,128,.14);
+  --label:#fff; --label2:rgba(235,235,245,.6); --label3:rgba(235,235,245,.3); --sep:rgba(84,84,88,.6);
+  --blue:#0a84ff; --green:#30d158; --red:#ff453a; --orange:#ff9f0a; --yellow:#ffd60a; --purple:#bf5af2; --indigo:#5e5ce6; --teal:#40c8e0; --gray:#98989d; --pink:#ff375f;
+  --yellow-text:#ffd60a;
+  --material:rgba(0,0,0,.72); --glass:rgba(44,44,48,.58); --glass-edge:rgba(255,255,255,.14);
+  --sidebar:#161618; --seg-on:#636366; --sheet:#1c1c1e;
+  color-scheme: dark;
+}
+html { -webkit-tap-highlight-color: transparent; -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg); color: var(--label);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Sukhumvit Set", "Noto Sans Thai", "Helvetica Neue", "Segoe UI", sans-serif;
+  font-size: 17px; line-height: 1.4; letter-spacing: -.008em;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+}
+[x-cloak] { display: none !important; }
+button { cursor: default; }
+@media (hover:hover) { button, a, .row-tap { cursor: pointer; } }
+
+/* ---------- Type scale (Apple HIG) ---------- */
+.large-title { font-size: 34px; line-height: 41px; font-weight: 700; letter-spacing: -.022em; }
+.title1 { font-size: 28px; line-height: 34px; font-weight: 700; letter-spacing: -.02em; }
+.title2 { font-size: 22px; line-height: 28px; font-weight: 700; letter-spacing: -.018em; }
+.title3 { font-size: 20px; line-height: 25px; font-weight: 600; letter-spacing: -.016em; }
+.headline { font-size: 17px; line-height: 22px; font-weight: 600; }
+.body { font-size: 17px; line-height: 22px; }
+.callout { font-size: 16px; line-height: 21px; }
+.subhead { font-size: 15px; line-height: 20px; }
+.footnote { font-size: 13px; line-height: 18px; letter-spacing: -.004em; }
+.caption { font-size: 12px; line-height: 16px; }
+.caption2 { font-size: 11px; line-height: 13px; letter-spacing: .006em; }
+.num { font-family: ui-rounded, "SF Pro Rounded", -apple-system, "Noto Sans Thai", sans-serif; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.t2 { color: var(--label2); } .t3 { color: var(--label3); } .tint { color: var(--blue); }
+.c-blue{color:var(--blue)} .c-green{color:var(--green)} .c-red{color:var(--red)} .c-orange{color:var(--orange)} .c-yellow{color:var(--yellow-text)} .c-purple{color:var(--purple)} .c-indigo{color:var(--indigo)} .c-teal{color:var(--teal)} .c-gray{color:var(--gray)}
+.bg-blue{background:var(--blue)} .bg-green{background:var(--green)} .bg-red{background:var(--red)} .bg-orange{background:var(--orange)} .bg-yellow{background:var(--yellow)} .bg-purple{background:var(--purple)} .bg-indigo{background:var(--indigo)} .bg-teal{background:var(--teal)} .bg-gray{background:var(--gray)} .bg-pink{background:var(--pink)}
+.soft-red{background:color-mix(in srgb,var(--red) 11%,transparent)} .soft-green{background:color-mix(in srgb,var(--green) 13%,transparent)} .soft-orange{background:color-mix(in srgb,var(--orange) 13%,transparent)} .soft-blue{background:color-mix(in srgb,var(--blue) 11%,transparent)}
+
+/* ---------- Grouped list ---------- */
+.group { background: var(--bg2); border-radius: 14px; overflow: hidden; }
+.group-header { font-size: 13px; line-height: 18px; color: var(--label2); padding: 0 16px 7px; }
+.group-footer { font-size: 13px; line-height: 18px; color: var(--label2); padding: 7px 16px 0; }
+.section-head { display: flex; align-items: baseline; justify-content: space-between; padding: 0 4px 10px; }
+.row { position: relative; display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 11px 16px; width: 100%; text-align: left; }
+.row + .row::before, .row.sep::before { content: ""; position: absolute; top: 0; right: 0; left: var(--inset, 16px); border-top: .5px solid var(--sep); }
+.row.ic  { --inset: 58px; }
+.row.ic-lg { --inset: 72px; }
+.row.ic-av { --inset: 64px; }
+.row-tap { transition: background .15s; }
+.row-tap:active { background: var(--fill); }
+@media (hover:hover) { .row-tap:hover { background: var(--fill3); } }
+.row .val { color: var(--label2); text-align: right; }
+.chev { color: var(--label3); flex-shrink: 0; }
+
+/* ---------- Icon squircles ---------- */
+.sq { width: 30px; height: 30px; border-radius: 7px; display: grid; place-items: center; color: #fff; flex-shrink: 0; }
+.sq-md { width: 44px; height: 44px; border-radius: 10px; }
+.sq-lg { width: 60px; height: 60px; border-radius: 13.5px; }
+.sq-xl { width: 104px; height: 104px; border-radius: 23px; box-shadow: inset 0 0 0 .5px rgba(0,0,0,.08); }
+.sq-sm { width: 26px; height: 26px; border-radius: 6px; }
+.sq svg { stroke-width: 2.1; }
+.avatar { border-radius: 999px; display: grid; place-items: center; flex-shrink: 0; color: #fff; font-weight: 600; letter-spacing: 0;
+  background: linear-gradient(180deg, #a6abb7 0%, #858a96 100%); }
+.dot { width: 8px; height: 8px; border-radius: 99px; display: inline-block; flex-shrink: 0; }
+
+/* ---------- Controls ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 50px; padding: 0 20px; border-radius: 14px; font-size: 17px; font-weight: 600; transition: opacity .15s, transform .1s, background .15s; }
+.btn:active { opacity: .7; }
+.btn:disabled { opacity: .35; pointer-events: none; }
+.btn-filled { background: var(--blue); color: #fff; }
+.btn-tinted { background: color-mix(in srgb, var(--blue) 15%, transparent); color: var(--blue); }
+.btn-gray { background: var(--fill); color: var(--blue); }
+.btn-gray-red { background: var(--fill); color: var(--red); }
+.btn-md { height: 44px; border-radius: 12px; font-size: 16px; }
+.btn-sm { height: 34px; padding: 0 14px; border-radius: 999px; font-size: 15px; }
+.pill { height: 28px; min-width: 64px; padding: 0 14px; border-radius: 999px; background: var(--fill); color: var(--blue); font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; transition: background .2s, color .2s; }
+.pill.on { background: var(--blue); color: #fff; }
+.pill:disabled { opacity: .3; }
+.pill-lg { height: 32px; padding: 0 20px; font-size: 15px; }
+.link { color: var(--blue); }
+.link:active { opacity: .5; }
+
+.search { position: relative; display: flex; align-items: center; height: 36px; border-radius: 10px; background: var(--fill); }
+.search > span { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); display: flex; color: var(--label2); pointer-events: none; }
+.search input { width: 100%; height: 100%; background: transparent; padding: 0 10px 0 32px; font-size: 17px; outline: none; color: var(--label); }
+.search input::placeholder { color: var(--label2); }
+.search-sm { height: 30px; border-radius: 8px; }
+.search-sm input { font-size: 14px; padding-left: 28px; }
+.search-sm > span { left: 7px; }
+
+.seg { display: flex; background: var(--fill); border-radius: 9px; padding: 2px; gap: 0; }
+.seg button { flex: 1; height: 28px; border-radius: 7px; font-size: 13px; font-weight: 500; white-space: nowrap; padding: 0 10px; color: var(--label); transition: background .2s, box-shadow .2s; position: relative; }
+.seg button.on { background: var(--seg-on); box-shadow: 0 3px 8px rgba(0,0,0,.12), 0 3px 1px rgba(0,0,0,.04); font-weight: 600; }
+.seg-lg button { height: 32px; font-size: 14px; }
+
+.chip { height: 32px; padding: 0 14px; border-radius: 999px; background: var(--fill); font-size: 15px; font-weight: 500; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; transition: background .2s, color .2s; }
+.chip.on { background: var(--label); color: var(--bg2); }
+
+.switch { width: 51px; height: 31px; border-radius: 99px; background: var(--fill2); position: relative; flex-shrink: 0; transition: background .25s; }
+.switch.on { background: var(--green); }
+.switch > span { position: absolute; top: 2px; left: 2px; width: 27px; height: 27px; border-radius: 50%; background: #fff; box-shadow: 0 3px 8px rgba(0,0,0,.15), 0 3px 1px rgba(0,0,0,.06); transition: transform .25s cubic-bezier(.3,.7,.4,1); }
+.switch.on > span { transform: translateX(20px); }
+
+.field { flex: 1; min-width: 0; background: transparent; outline: none; font-size: 17px; color: var(--label); }
+.field::placeholder { color: var(--label3); }
+.field-r { text-align: right; }
+.date-pill { background: var(--fill); border-radius: 7px; padding: 5px 10px; font-size: 16px; color: var(--label); outline: none; }
+.date-pill::-webkit-calendar-picker-indicator { opacity: .45; }
+.picker { appearance: none; -webkit-appearance: none; background: transparent; outline: none; color: var(--label2); font-size: 17px; text-align: right; text-align-last: right; padding-right: 18px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='14' viewBox='0 0 10 14' fill='none' stroke='%238e8e93' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 5l3-3 3 3M2 9l3 3 3-3'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right center; max-width: 60%; }
+.picker-tint { color: var(--blue); font-size: 15px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='14' viewBox='0 0 10 14' fill='none' stroke='%23007aff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 5l3-3 3 3M2 9l3 3 3-3'/%3E%3C/svg%3E"); }
+.picker option { color: initial; }
+.checkbox-row .check { color: var(--blue); opacity: 0; transition: opacity .15s; }
+.checkbox-row.on .check { opacity: 1; }
+
+/* ---------- Bars (glass / material) ---------- */
+.material { background: var(--material); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); }
+.navbar { position: sticky; top: 0; z-index: 30; padding-top: env(safe-area-inset-top); transition: background .2s, box-shadow .2s; }
+.navbar.is-scrolled, .toolbar.is-scrolled { background: var(--material); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 .5px 0 var(--sep); }
+.navbar-inner { height: 52px; display: flex; align-items: center; padding: 0 12px; gap: 8px; }
+.nav-title { opacity: 0; transition: opacity .2s; }
+.is-scrolled .nav-title { opacity: 1; }
+.nav-back { display: inline-flex; align-items: center; gap: 2px; color: var(--blue); font-size: 17px; height: 36px; padding-right: 8px; max-width: 100%; }
+.nav-back:active { opacity: .5; }
+.glass-btn { position: relative; width: 38px; height: 38px; border-radius: 99px; display: grid; place-items: center; color: var(--label);
+  background: var(--glass); -webkit-backdrop-filter: blur(16px) saturate(180%); backdrop-filter: blur(16px) saturate(180%);
+  box-shadow: inset 0 0 0 .5px var(--glass-edge), 0 1px 4px rgba(0,0,0,.06); }
+.glass-btn:active { transform: scale(.94); }
+.badge-count { position: absolute; top: -3px; right: -3px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 99px; background: var(--red); color: #fff; font-size: 11px; font-weight: 600; display: grid; place-items: center; box-shadow: 0 0 0 2px var(--bg); }
+
+.toolbar { position: sticky; top: 0; z-index: 30; height: 56px; align-items: center; gap: 10px; padding: 0 28px; transition: background .2s, box-shadow .2s; }
+.tool-btn { position: relative; width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center; color: var(--label2); transition: background .15s; }
+.tool-btn:hover { background: var(--fill); color: var(--label); }
+
+.tabbar { position: fixed; z-index: 40; left: 14px; right: 14px; bottom: calc(10px + env(safe-area-inset-bottom)); height: 62px; border-radius: 31px; display: flex; padding: 4px;
+  background: var(--glass); -webkit-backdrop-filter: blur(28px) saturate(200%); backdrop-filter: blur(28px) saturate(200%);
+  box-shadow: inset 0 0 0 .5px var(--glass-edge), inset 0 1px 0 var(--glass-edge), 0 10px 30px rgba(0,0,0,.12), 0 0 0 .5px rgba(0,0,0,.05); }
+.tab { flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; border-radius: 27px; color: var(--label); font-size: 10px; font-weight: 500; letter-spacing: .01em; transition: color .2s, background .25s; }
+.tab.on { color: var(--blue); background: var(--fill); }
+.tab .badge-count { top: 4px; right: calc(50% - 22px); box-shadow: none; }
+
+.sidebar { position: fixed; inset: 0 auto 0 0; width: 264px; z-index: 35; flex-direction: column; background: var(--sidebar); border-right: .5px solid var(--sep); }
+.side-head { font-size: 11px; font-weight: 600; color: var(--label3); padding: 0 10px 4px; letter-spacing: .01em; }
+.side-item { width: 100%; height: 32px; display: flex; align-items: center; gap: 9px; padding: 0 10px; border-radius: 8px; font-size: 14px; color: var(--label); }
+.side-item:hover { background: var(--fill3); }
+.side-item .side-ic { color: var(--blue); display: grid; place-items: center; width: 20px; }
+.side-item.on { background: var(--blue); color: #fff; }
+.side-item.on .side-ic { color: #fff; }
+.side-badge { font-size: 12px; color: var(--label2); font-variant-numeric: tabular-nums; }
+.side-item.on .side-badge { color: rgba(255,255,255,.85); }
+
+/* ---------- Sheet / popover / toast ---------- */
+.scrim { position: fixed; inset: 0; z-index: 60; background: rgba(0,0,0,.32); }
+.sheet { position: fixed; z-index: 61; left: 0; right: 0; bottom: 0; max-height: 92vh; overflow-y: auto; background: var(--sheet); border-radius: 26px 26px 0 0; padding-bottom: calc(20px + env(safe-area-inset-bottom)); box-shadow: 0 -10px 40px rgba(0,0,0,.18); }
+@media (min-width: 640px) { .sheet { left: 50%; right: auto; bottom: auto; top: 50%; width: 540px; transform: translate(-50%,-50%); border-radius: 22px; padding-bottom: 20px; } }
+.sheet-bar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 56px; padding: 0 16px; position: sticky; top: 0; background: var(--sheet); z-index: 1; }
+.grabber { width: 36px; height: 5px; border-radius: 3px; background: var(--label3); margin: 6px auto 0; }
+.popover { position: fixed; z-index: 55; right: 12px; top: calc(60px + env(safe-area-inset-top)); width: min(380px, calc(100vw - 24px)); border-radius: 18px; overflow: hidden; background: var(--bg2);
+  box-shadow: 0 0 0 .5px var(--sep), 0 20px 50px rgba(0,0,0,.18); }
+.toast { position: fixed; z-index: 70; top: calc(12px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; padding: 10px 18px 10px 10px; border-radius: 999px; max-width: calc(100vw - 32px);
+  background: rgba(28,28,30,.92); color: #fff; -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); box-shadow: 0 10px 30px rgba(0,0,0,.25); font-size: 15px; font-weight: 500; }
+html.dark .toast { background: rgba(58,58,60,.92); }
+
+/* ---------- Misc components ---------- */
+.tile { padding: 14px 16px 14px; display: block; text-align: left; width: 100%; }
+.tile:active { opacity: .75; }
+.storage { display: flex; gap: 2px; height: 22px; border-radius: 6px; overflow: hidden; background: var(--fill); }
+.strip { display: flex; overflow-x: auto; scrollbar-width: none; }
+.strip::-webkit-scrollbar { display: none; }
+.strip > div { flex: 1 0 104px; text-align: center; padding: 2px 10px; position: relative; }
+.strip > div + div::before { content: ""; position: absolute; left: 0; top: 18%; bottom: 18%; border-left: .5px solid var(--sep); }
+.tracker { display: flex; }
+.tracker > div { flex: 1; position: relative; font-size: 11px; color: var(--label3); }
+.tracker > div:last-child { flex: 0 0 auto; }
+.tracker > div i { display: block; width: 10px; height: 10px; border-radius: 50%; background: var(--fill2); position: relative; z-index: 1; margin-bottom: 6px; transition: background .3s; }
+.tracker > div::before { content: ""; position: absolute; top: 4px; left: 10px; right: 0; height: 2px; background: var(--fill2); }
+.tracker > div:last-child::before { display: none; }
+.tracker > div.done i { background: var(--tc); }
+.tracker > div.done { color: var(--label2); }
+.tracker > div.done.past::before { background: var(--tc); }
+.tracker > div.cur i { box-shadow: 0 0 0 4px color-mix(in srgb, var(--tc) 22%, transparent); }
+.empty { text-align: center; padding: 56px 24px; }
+.empty .glyph { color: var(--label3); margin: 0 auto 14px; width: fit-content; }
+.no-scrollbar { scrollbar-width: none; } .no-scrollbar::-webkit-scrollbar { display: none; }
+.cal-day { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.cal-day b { width: 34px; height: 34px; border-radius: 99px; display: grid; place-items: center; font-weight: 500; font-size: 17px; }
+.cal-day.today b { background: var(--red); color: #fff; font-weight: 600; }
+.cal-day.off b { color: var(--label3); text-decoration: line-through; }
+.cal-day i { width: 5px; height: 5px; border-radius: 9px; background: transparent; }
+.cal-day.busy i { background: var(--blue); }
+.cal-day.off i { background: var(--red); opacity: .6; }
+.camera { position: relative; aspect-ratio: 3/4; border-radius: 28px; overflow: hidden; background: #0b0b0c; }
+@media (min-width: 640px) { .camera { aspect-ratio: 1; } }
+.viewfinder { position: absolute; inset: 22%; }
+.viewfinder span { position: absolute; width: 34px; height: 34px; border-color: #ffd60a; border-style: solid; border-width: 0; }
+.viewfinder span:nth-child(1) { top: 0; left: 0; border-top-width: 4px; border-left-width: 4px; border-top-left-radius: 14px; }
+.viewfinder span:nth-child(2) { top: 0; right: 0; border-top-width: 4px; border-right-width: 4px; border-top-right-radius: 14px; }
+.viewfinder span:nth-child(3) { bottom: 0; left: 0; border-bottom-width: 4px; border-left-width: 4px; border-bottom-left-radius: 14px; }
+.viewfinder span:nth-child(4) { bottom: 0; right: 0; border-bottom-width: 4px; border-right-width: 4px; border-bottom-right-radius: 14px; }
+@keyframes breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(.96); } }
+.viewfinder.idle { animation: breathe 2.4s ease-in-out infinite; }
+.viewfinder.hit { transform: scale(.9); transition: transform .25s; }
+.viewfinder.hit span { border-color: #30d158; }
+@keyframes rise { from { transform: translateY(12px); opacity: 0 } to { transform: none; opacity: 1 } }
+.rise { animation: rise .3s cubic-bezier(.2,.8,.2,1); }
+.sig { width: 100%; height: 160px; touch-action: none; display: block; }
+.bottom-action { position: sticky; z-index: 20; bottom: calc(84px + env(safe-area-inset-bottom)); }
+@media (min-width: 1024px) { .bottom-action { bottom: 16px; } }
+.hairline-t { border-top: .5px solid var(--sep); }
+.hairline-b { border-bottom: .5px solid var(--sep); }
+</style>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+</head>
+<body>
+
+<!-- ============================================================ SIGN IN -->
+<div x-show="!loggedIn" x-cloak class="min-h-screen flex items-center justify-center px-5 py-14">
+  <div class="w-full max-w-[400px]">
+    <div class="mx-auto w-[88px] h-[88px] rounded-[20px] grid place-items-center text-white shadow-[0_8px_24px_rgba(0,90,255,.25)]" style="background:linear-gradient(180deg,#2f8cff 0%,#0058e6 100%)">
+      <svg width="46" height="46" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M8 34a16 16 0 1 1 32 0"/><path d="M24 34l8-10"/><circle cx="24" cy="34" r="2.5" fill="currentColor"/><path d="M14 22.5l1.8 1.3M24 17v2.2M34 22.5l-1.8 1.3" stroke-width="2.4"/></svg>
+    </div>
+    <h1 class="title1 text-center mt-6">เข้าสู่ระบบ SEMS</h1>
+    <p class="subhead t2 text-center mt-1.5">ระบบบริหารการยืม-คืนอุปกรณ์มาตรฐาน<br>สำหรับงานสอบเทียบเครื่องมือวัด</p>
+
+    <form class="mt-9" @submit.prevent="login('technician')">
+      <div class="group">
+        <label class="row"><input class="field" value="EMP-10234" placeholder="รหัสพนักงานหรืออีเมล" autocomplete="username"></label>
+        <label class="row"><input class="field" type="password" value="password" placeholder="รหัสผ่าน" autocomplete="current-password"></label>
+      </div>
+      <button class="btn btn-filled w-full mt-5">เข้าสู่ระบบ</button>
+      <button type="button" class="btn btn-gray w-full mt-3" style="color:var(--label)" @click="login('technician')">
+        <svg width="17" height="17" viewBox="0 0 21 21"><path fill="#f25022" d="M1 1h9v9H1z"/><path fill="#7fba00" d="M11 1h9v9h-9z"/><path fill="#00a4ef" d="M1 11h9v9H1z"/><path fill="#ffb900" d="M11 11h9v9h-9z"/></svg>
+        ดำเนินการต่อด้วย Microsoft
+      </button>
+      <p class="text-center mt-5"><a href="#" class="subhead link">ลืมรหัสผ่าน?</a></p>
+    </form>
+
+    <div class="group-header mt-12">ทดลองใช้งานตามบทบาท</div>
+    <div class="group">
+      <template x-for="(r,k) in roles" :key="k">
+        <button class="row row-tap ic-av" @click="login(k)">
+          <span class="avatar w-9 h-9 text-[14px]" x-text="r.initials"></span>
+          <span class="flex-1 min-w-0"><span class="block" x-text="r.label"></span><span class="block footnote t2" x-text="r.name"></span></span>
+          <span x-html="chev"></span>
+        </button>
+      </template>
+    </div>
+    <p class="group-footer">แต่ละบทบาทจะเห็นเมนูและสิทธิ์การใช้งานที่ต่างกัน ข้อมูลทั้งหมดเป็นข้อมูลจำลอง</p>
+  </div>
+</div>
+
+<!-- ============================================================ APP -->
+<div x-show="loggedIn" x-cloak>
+
+  <!-- Sidebar · macOS -->
+  <aside class="sidebar hidden lg:flex">
+    <div class="px-5 pt-6 pb-4 flex items-center gap-3">
+      <div class="w-9 h-9 rounded-[9px] grid place-items-center text-white" style="background:linear-gradient(180deg,#2f8cff,#0058e6)">
+        <svg width="20" height="20" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"><path d="M8 34a16 16 0 1 1 32 0"/><path d="M24 34l8-10"/></svg>
+      </div>
+      <div class="leading-tight"><div class="text-[15px] font-semibold">SEMS</div><div class="text-[11px] t2">Standard Equipment</div></div>
+    </div>
+    <div class="px-3 pb-2">
+      <div class="search search-sm"><span x-html="ic('search','w-[14px] h-[14px]')"></span><input placeholder="ค้นหาอุปกรณ์" x-model="q" @input="page!=='equipment' && go('equipment')"></div>
+    </div>
+    <nav class="flex-1 overflow-y-auto px-3 pt-3">
+      <template x-for="sec in navSections" :key="sec.t">
+        <div class="mb-5">
+          <div class="side-head" x-text="sec.t"></div>
+          <template x-for="n in sec.items" :key="n.id">
+            <button class="side-item" :class="{ on: isActive(n.id) }" @click="go(n.id)">
+              <span class="side-ic" x-html="ic(n.icon,'w-[17px] h-[17px]')"></span>
+              <span class="flex-1 text-left truncate" x-text="n.label"></span>
+              <span x-show="n.badge" class="side-badge" x-text="n.badge"></span>
+            </button>
+          </template>
+        </div>
+      </template>
+    </nav>
+    <div class="p-3 hairline-t">
+      <div class="flex items-center gap-2.5 px-2 py-1.5">
+        <span class="avatar w-8 h-8 text-[12px]" x-text="me.initials"></span>
+        <div class="flex-1 min-w-0 leading-tight"><div class="text-[13px] font-medium truncate" x-text="me.name"></div>
+          <select class="picker picker-tint text-[12px] !text-[12px] !max-w-full -ml-0.5 !text-left" style="text-align-last:left;padding-right:14px" x-model="role" @change="switchRole(role)">
+            <template x-for="(r,k) in roles" :key="k"><option :value="k" :selected="role===k" x-text="r.label"></option></template>
+          </select>
+        </div>
+        <button class="tool-btn w-7 h-7" title="ออกจากระบบ" @click="loggedIn=false" x-html="ic('logout','w-4 h-4')"></button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="lg:pl-[264px] min-h-screen">
+    <!-- Nav bar · iOS -->
+    <header class="navbar lg:hidden" :class="{ 'is-scrolled': scrolled }">
+      <div class="navbar-inner">
+        <div class="flex-1 min-w-0 flex">
+          <button x-show="back" class="nav-back" @click="back && back.fn()"><span x-html="ic('chevL','w-[22px] h-[22px]')"></span><span class="truncate" x-text="back ? back.label : ''"></span></button>
+        </div>
+        <div class="nav-title headline truncate max-w-[45%] text-center" x-text="pageTitle"></div>
+        <div class="flex-1 flex justify-end gap-2">
+          <button class="glass-btn" @click="go('cart')" aria-label="รายการยืม"><span x-html="ic('bag','w-[19px] h-[19px]')"></span><span x-show="cart.length" class="badge-count" x-text="cart.length"></span></button>
+          <button class="glass-btn" @click="notifOpen=!notifOpen" aria-label="การแจ้งเตือน"><span x-html="ic('bell','w-[19px] h-[19px]')"></span><span class="badge-count" x-text="notifications.length"></span></button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Toolbar · macOS -->
+    <header class="toolbar hidden lg:flex" :class="{ 'is-scrolled': scrolled }">
+      <button x-show="back && back.desktop" class="nav-back -ml-2" @click="back && back.fn()"><span x-html="ic('chevL','w-5 h-5')"></span><span x-text="back ? back.label : ''"></span></button>
+      <div class="nav-title text-[15px] font-semibold" x-text="pageTitle"></div>
+      <div class="flex-1"></div>
+      <button class="tool-btn" title="รายการยืม" @click="go('cart')"><span x-html="ic('bag','w-[18px] h-[18px]')"></span><span x-show="cart.length" class="badge-count !shadow-none" x-text="cart.length"></span></button>
+      <button class="tool-btn" title="ลักษณะ" @click="dark=!dark"><span x-html="ic(dark?'sun':'moon','w-[18px] h-[18px]')"></span></button>
+      <button class="tool-btn" title="การแจ้งเตือน" @click="notifOpen=!notifOpen"><span x-html="ic('bell','w-[18px] h-[18px]')"></span><span class="absolute top-[7px] right-[8px] w-2 h-2 rounded-full bg-red"></span></button>
+    </header>
+
+    <main class="px-4 sm:px-6 lg:px-10 pb-36 lg:pb-16 max-w-[1100px] mx-auto">
+
+      <!-- ======================================================== SUMMARY -->
+      <section x-show="page==='dashboard'">
+        <div class="flex items-end justify-between pt-1 pb-6">
+          <div>
+            <p class="footnote font-semibold t2" x-text="longDate"></p>
+            <h1 class="large-title">สรุป</h1>
+          </div>
+          <button class="avatar w-10 h-10 text-[15px] lg:hidden" @click="go('more')" x-text="me.initials"></button>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <template x-for="s in stats" :key="s.label">
+            <button class="group tile" @click="go(s.go)">
+              <div class="flex items-center gap-1.5 subhead font-semibold" :class="'c-'+s.k">
+                <span x-html="ic(s.icon,'w-[17px] h-[17px]')"></span><span class="truncate" x-text="s.label"></span>
+                <span class="ml-auto" x-html="chev"></span>
+              </div>
+              <div class="mt-6 flex items-baseline gap-1.5"><span class="num text-[34px] leading-none font-bold" x-text="s.value"></span><span class="subhead t2" x-text="s.unit"></span></div>
+            </button>
+          </template>
+        </div>
+
+        <div class="grid lg:grid-cols-5 gap-x-8 mt-9">
+          <div class="lg:col-span-3">
+            <div class="section-head"><h2 class="title2">ต้องดำเนินการ</h2><span class="subhead t2" x-text="tasks.length ? tasks.length+' รายการ' : ''"></span></div>
+            <div class="group">
+              <template x-for="(t,i) in tasks" :key="i">
+                <button class="row row-tap ic" @click="t.action()">
+                  <span class="sq" :class="'bg-'+t.k" x-html="ic(t.icon,'w-[17px] h-[17px]')"></span>
+                  <span class="flex-1 min-w-0"><span class="block truncate" x-text="t.title"></span><span class="block footnote t2 truncate" x-text="t.sub"></span></span>
+                  <span class="subhead t2 shrink-0" x-text="t.cta"></span><span x-html="chev"></span>
+                </button>
+              </template>
+              <div x-show="!tasks.length" class="row justify-center t2 py-6">ไม่มีงานค้าง</div>
+            </div>
+
+            <div class="section-head mt-9"><h2 class="title2">ใกล้ครบกำหนดสอบเทียบ</h2><button class="subhead link" @click="go(canSee('calibration') ? 'calibration' : 'equipment')">ดูทั้งหมด</button></div>
+            <div class="group">
+              <template x-for="e in calSoonList" :key="e.id">
+                <button class="row row-tap ic" @click="openDetail(e.id)">
+                  <span class="sq" :class="'bg-'+cat(e).k" x-html="ic(cat(e).icon,'w-[17px] h-[17px]')"></span>
+                  <span class="flex-1 min-w-0"><span class="block truncate" x-text="e.name"></span><span class="block footnote t2" x-text="e.asset"></span></span>
+                  <span class="text-right shrink-0"><span class="block subhead" :class="calText(e)" x-text="relDays(days(e.calDue))"></span><span class="block footnote t2" x-text="fmt(e.calDue)"></span></span>
+                  <span x-html="chev"></span>
+                </button>
+              </template>
+            </div>
+          </div>
+
+          <div class="lg:col-span-2">
+            <div class="section-head mt-9 lg:mt-0"><h2 class="title2">สถานะอุปกรณ์</h2></div>
+            <div class="group p-4">
+              <div class="flex items-baseline justify-between"><span class="headline" x-text="'ทั้งหมด '+equipment.length+' รายการ'"></span><span class="footnote t2">อัปเดตเมื่อสักครู่</span></div>
+              <div class="storage mt-3">
+                <template x-for="d in statusDist" :key="d.l"><div :class="'bg-'+d.k" :style="`flex:${d.n}`"></div></template>
+              </div>
+              <div class="grid grid-cols-2 gap-x-4 gap-y-2 mt-4 footnote">
+                <template x-for="d in statusDist" :key="d.l"><div class="flex items-center gap-2"><i class="dot" :class="'bg-'+d.k"></i><span class="flex-1 truncate" x-text="d.l"></span><span class="t2 num" x-text="d.n"></span></div></template>
+              </div>
+            </div>
+
+            <div class="section-head mt-9"><h2 class="title2">กิจกรรมล่าสุด</h2></div>
+            <div class="group">
+              <template x-for="(a,i) in activities.slice(0,6)" :key="i">
+                <div class="row items-start" style="--inset:36px">
+                  <i class="dot mt-[7px]" :class="'bg-'+a.k"></i>
+                  <span class="flex-1 min-w-0"><span class="block subhead" x-text="a.what"></span><span class="block footnote t2 mt-0.5" x-text="a.who+' · '+a.t"></span></span>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================== EQUIPMENT -->
+      <section x-show="page==='equipment'">
+        <h1 class="large-title pt-1">อุปกรณ์</h1>
+        <div class="search mt-3"><span x-html="ic('search','w-[17px] h-[17px]')"></span><input placeholder="ชื่อ รหัสทรัพย์สิน ยี่ห้อ รุ่น หรือ S/N" x-model="q"></div>
+        <div class="flex gap-2 overflow-x-auto no-scrollbar mt-3 -mx-4 px-4 sm:mx-0 sm:px-0">
+          <button class="chip" :class="{ on: catFilter==='all' }" @click="catFilter='all'">ทั้งหมด</button>
+          <template x-for="(c,k) in cats" :key="k"><button class="chip" :class="{ on: catFilter===k }" @click="catFilter=k" x-text="c.th"></button></template>
+        </div>
+        <div class="flex items-center justify-between mt-6 mb-[7px] px-4">
+          <span class="footnote t2" x-text="filteredEq.length+' รายการ'"></span>
+          <select class="picker picker-tint" x-model="statusFilter">
+            <option value="all">ทุกสถานะ</option>
+            <template x-for="(s,k) in statuses" :key="k"><option :value="k" x-text="s.l"></option></template>
+          </select>
+        </div>
+        <div class="group" x-show="filteredEq.length">
+          <template x-for="e in filteredEq" :key="e.id">
+            <div class="row row-tap ic-lg py-3" @click="openDetail(e.id)">
+              <span class="sq sq-md" :class="'bg-'+cat(e).k" x-html="ic(cat(e).icon,'w-[22px] h-[22px]')"></span>
+              <div class="flex-1 min-w-0">
+                <div class="truncate" x-text="e.name"></div>
+                <div class="footnote t2 truncate" x-text="e.brand+' '+e.model+' · '+e.asset"></div>
+                <div class="footnote mt-1 flex items-center gap-1.5 flex-wrap">
+                  <i class="dot" :class="'bg'+'-'+st(e.status).k"></i><span class="t2" x-text="st(e.status).l"></span>
+                  <span class="t3">·</span><span :class="calText(e)" x-text="'Cal '+relDays(days(e.calDue))"></span>
+                </div>
+              </div>
+              <div class="hidden md:block w-44 footnote t2 truncate text-right" x-text="e.range"></div>
+              <div class="hidden md:block w-36 footnote t2 truncate text-right" x-text="e.loc"></div>
+              <button class="pill" :class="{ on: inCart(e.id) }" :disabled="!canBorrow(e).ok" @click.stop="toggleCart(e.id)">
+                <span x-show="inCart(e.id)" x-html="ic('check','w-3.5 h-3.5')"></span><span x-text="inCart(e.id) ? 'เพิ่มแล้ว' : 'ยืม'"></span>
+              </button>
+            </div>
+          </template>
+        </div>
+        <div x-show="!filteredEq.length" class="empty">
+          <div class="glyph" x-html="ic('search','w-12 h-12')"></div>
+          <div class="title2">ไม่พบผลลัพธ์</div>
+          <p class="subhead t2 mt-1">ตรวจสอบตัวสะกด หรือลองค้นหาใหม่</p>
+        </div>
+      </section>
+
+      <!-- ======================================================== DETAIL · App Store layout -->
+      <section x-show="page==='detail'">
+        <template x-if="sel">
+          <div class="pt-2">
+            <div class="flex gap-4 sm:gap-5">
+              <div class="sq sq-xl" :class="'bg-'+cat(sel).k" x-html="ic(cat(sel).icon,'w-12 h-12')"></div>
+              <div class="flex-1 min-w-0 flex flex-col">
+                <h1 class="title2" x-text="sel.name"></h1>
+                <p class="subhead t2" x-text="sel.brand+' '+sel.model"></p>
+                <div class="mt-auto pt-3 flex items-center gap-3">
+                  <button class="pill pill-lg" :class="inCart(sel.id) ? '' : 'on'" :disabled="!canBorrow(sel).ok" @click="toggleCart(sel.id)" x-text="!canBorrow(sel).ok ? canBorrow(sel).short : (inCart(sel.id) ? 'เพิ่มแล้ว' : 'เพิ่มลงรายการยืม')"></button>
+                  <span class="caption t2 leading-tight hidden sm:block" x-show="sel.approval">ต้องได้รับ<br>การอนุมัติ</span>
+                  <button class="ml-auto glass-btn !bg-[var(--fill)] !shadow-none tint" title="พิมพ์ QR" @click="toast('ส่งพิมพ์สติกเกอร์ QR '+sel.asset+' แล้ว')" x-html="ic('printer','w-[18px] h-[18px]')"></button>
+                </div>
+              </div>
+            </div>
+
+            <div class="hairline-t hairline-b mt-6 py-3 -mx-4 px-4 sm:mx-0 sm:px-0">
+              <div class="strip">
+                <template x-for="s in detailStrip" :key="s.cap">
+                  <div>
+                    <div class="caption2 font-semibold t3" x-text="s.cap"></div>
+                    <div class="title3 mt-1.5 num" :class="s.cls || 't2'" x-text="s.val"></div>
+                    <div class="caption t2 mt-0.5 truncate" x-text="s.sub"></div>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+            <div x-show="!canBorrow(sel).ok" class="soft-red rounded-[14px] px-4 py-3 mt-5 flex gap-3 items-start">
+              <span class="c-red mt-0.5" x-html="ic('alert','w-5 h-5')"></span>
+              <div><div class="subhead font-semibold">ยืมไม่ได้ในขณะนี้</div><div class="footnote t2" x-text="canBorrow(sel).reason"></div></div>
+            </div>
+
+            <div class="seg seg-lg mt-6 max-w-lg">
+              <template x-for="t in [['info','ข้อมูล'],['cal','สอบเทียบ'],['loans','ประวัติยืม'],['docs','เอกสาร']]" :key="t[0]">
+                <button :class="{ on: detailTab===t[0] }" @click="detailTab=t[0]" x-text="t[1]"></button>
+              </template>
+            </div>
+
+            <!-- info -->
+            <div x-show="detailTab==='info'" class="grid lg:grid-cols-2 gap-x-6 mt-6">
+              <div>
+                <div class="group-header">ข้อมูลทางมาตรวิทยา</div>
+                <div class="group">
+                  <template x-for="r in [['รหัสทรัพย์สิน',sel.asset],['หมายเลขเครื่อง',sel.sn],['ระดับ',sel.level+' Standard'],['ย่านการวัด',sel.range],['ความแม่นยำ',sel.accuracy],['Traceability',sel.lab+' → SI']]" :key="r[0]">
+                    <div class="row"><span class="shrink-0" x-text="r[0]"></span><span class="val flex-1 min-w-0 subhead" x-text="r[1]"></span></div>
+                  </template>
+                </div>
+                <div class="group-header mt-7">อุปกรณ์เสริมในชุด</div>
+                <div class="group">
+                  <template x-for="a in sel.accessories" :key="a"><div class="row"><span class="flex-1" x-text="a"></span><span class="footnote t2">1</span></div></template>
+                </div>
+              </div>
+              <div>
+                <div class="group-header mt-7 lg:mt-0">ความพร้อมใช้ 14 วัน</div>
+                <div class="group p-4">
+                  <div class="grid grid-cols-7 gap-y-3">
+                    <template x-for="d in avail(sel)" :key="d.iso">
+                      <div class="cal-day" :class="d.cls"><span class="caption2 t2" x-text="d.dow"></span><b x-text="d.day"></b><i></i></div>
+                    </template>
+                  </div>
+                  <div class="flex gap-4 mt-4 caption t2"><span class="flex items-center gap-1.5"><i class="dot bg-blue !w-[6px] !h-[6px]"></i>มีการจอง/ยืม</span><span class="flex items-center gap-1.5"><i class="dot bg-red !w-[6px] !h-[6px] opacity-60"></i>ใช้งานไม่ได้</span></div>
+                </div>
+                <div class="group-header mt-7">การจัดเก็บและเงื่อนไข</div>
+                <div class="group">
+                  <div class="row ic"><span class="sq bg-gray" x-html="ic('pin','w-4 h-4')"></span><span class="flex-1">ตำแหน่ง</span><span class="val subhead" x-text="sel.loc"></span></div>
+                  <div class="row ic"><span class="sq bg-blue" x-html="ic('clock','w-4 h-4')"></span><span class="flex-1">ยืมได้สูงสุด</span><span class="val" x-text="sel.maxDays+' วัน'"></span></div>
+                  <div class="row ic"><span class="sq bg-teal" x-html="ic('truck','w-4 h-4')"></span><span class="flex-1">นำออกนอกสถานที่</span><span class="val" x-text="sel.offsite ? 'ได้' : 'ไม่ได้'"></span></div>
+                  <div class="row ic"><span class="sq bg-orange" x-html="ic('lock','w-4 h-4')"></span><span class="flex-1">ต้องอนุมัติก่อนยืม</span><span class="val" x-text="sel.approval ? 'ใช่' : 'ไม่ต้อง'"></span></div>
+                  <div class="row ic"><span class="sq bg-green" x-html="ic('checkCircle','w-4 h-4')"></span><span class="flex-1">Intermediate Check หลังคืน</span><span class="val" x-text="sel.check ? 'ต้องทำ' : 'ไม่ต้อง'"></span></div>
+                </div>
+                <div class="group-header mt-7">QR Code</div>
+                <div class="group p-4 flex items-center gap-4">
+                  <div class="w-24 h-24 p-2 rounded-xl bg-white text-black shrink-0" style="box-shadow:inset 0 0 0 .5px rgba(0,0,0,.12)" x-html="qr(sel.asset)"></div>
+                  <div class="flex-1"><div class="headline font-mono" x-text="sel.asset"></div><p class="footnote t2 mt-0.5">ติดที่ตัวเครื่องเพื่อสแกนยืม-คืน</p>
+                    <button class="subhead link mt-2" @click="toast('ส่งพิมพ์สติกเกอร์ QR '+sel.asset+' แล้ว')">พิมพ์สติกเกอร์</button></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- calibration -->
+            <div x-show="detailTab==='cal'" class="grid lg:grid-cols-2 gap-x-6 mt-6">
+              <div>
+                <div class="group p-5 flex items-center gap-5">
+                  <div class="relative w-[92px] h-[92px] shrink-0">
+                    <svg viewBox="0 0 40 40" class="w-full h-full -rotate-90">
+                      <circle cx="20" cy="20" r="16" fill="none" stroke-width="6" :style="`stroke:var(--${calTone(sel)});opacity:.22`"/>
+                      <circle cx="20" cy="20" r="16" fill="none" stroke-width="6" stroke-linecap="round" :style="`stroke:var(--${calTone(sel)})`" :stroke-dasharray="`${Math.max(calRemainPct(sel),.5)*1.005} 101`"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="footnote font-semibold" :class="calText(sel)">อายุสอบเทียบคงเหลือ</div>
+                    <div class="flex items-baseline gap-1 mt-0.5"><span class="num text-[34px] font-bold leading-none" x-text="Math.max(days(sel.calDue),0)"></span><span class="subhead t2">วัน</span></div>
+                    <div class="footnote t2 mt-1" x-text="'ครบกำหนด '+fmt(sel.calDue)+' · รอบ '+sel.interval+' เดือน'"></div>
+                  </div>
+                </div>
+                <div class="group mt-4" x-show="canSee('calibration')">
+                  <button class="row row-tap justify-center link" @click="openCal(sel)">บันทึกผลสอบเทียบ</button>
+                </div>
+              </div>
+              <div>
+                <div class="group-header mt-7 lg:mt-0">ประวัติการสอบเทียบ</div>
+                <div class="group">
+                  <template x-for="(c,i) in calHistory(sel)" :key="i">
+                    <button class="row row-tap" @click="toast('เปิดใบรับรอง '+c.cert+'.pdf')">
+                      <span class="flex-1 min-w-0"><span class="block" x-text="fmt(c.date)"></span><span class="block footnote t2 truncate" x-text="c.lab+' · '+c.cert"></span></span>
+                      <span class="subhead font-medium" :class="c.result==='pass' ? 'c-green' : 'c-red'" x-text="c.result==='pass' ? 'ผ่าน' : 'ไม่ผ่าน'"></span>
+                      <span x-html="chev"></span>
+                    </button>
+                  </template>
+                </div>
+              </div>
+            </div>
+
+            <!-- loan history -->
+            <div x-show="detailTab==='loans'" class="mt-6">
+              <div class="group">
+                <template x-for="l in loans.filter(l=>l.items.includes(sel.id))" :key="l.no">
+                  <div class="row ic-av">
+                    <span class="avatar w-9 h-9 text-[13px]" x-text="initials(l.borrower)"></span>
+                    <span class="flex-1 min-w-0"><span class="block" x-text="l.borrower"></span><span class="block footnote t2 truncate" x-text="l.job+' · '+fmt(l.start)+' – '+fmt(l.end)"></span></span>
+                    <span class="footnote" :class="'c-'+ls(l).k" x-text="ls(l).l"></span>
+                  </div>
+                </template>
+                <div x-show="!loans.some(l=>l.items.includes(sel.id))" class="row justify-center t2 py-8">ยังไม่มีประวัติการยืม</div>
+              </div>
+            </div>
+
+            <!-- docs -->
+            <div x-show="detailTab==='docs'" class="mt-6">
+              <div class="group">
+                <template x-for="d in [['ใบรับรองการสอบเทียบ',sel.cert+'.pdf','red'],['คู่มือการใช้งาน','Operation Manual.pdf','blue'],['วิธีการ Intermediate Check','WI-CAL-0'+sel.id+'.pdf','green']]" :key="d[0]">
+                  <button class="row row-tap ic" @click="toast('ดาวน์โหลด '+d[1])">
+                    <span class="sq" :class="'bg-'+d[2]" x-html="ic('file','w-4 h-4')"></span>
+                    <span class="flex-1 min-w-0"><span class="block" x-text="d[0]"></span><span class="block footnote t2 truncate" x-text="d[1]"></span></span>
+                    <span class="tint" x-html="ic('download','w-[18px] h-[18px]')"></span>
+                  </button>
+                </template>
+              </div>
+            </div>
+          </div>
+        </template>
+      </section>
+
+      <!-- ======================================================== CART -->
+      <section x-show="page==='cart'">
+        <h1 class="large-title pt-1">รายการยืม</h1>
+        <div x-show="!cart.length" class="empty">
+          <div class="glyph" x-html="ic('bag','w-12 h-12')"></div>
+          <div class="title2">ยังไม่มีอุปกรณ์</div>
+          <p class="subhead t2 mt-1">เลือกอุปกรณ์มาตรฐานที่ต้องการยืม<br>ระบบจะตรวจสอบอายุสอบเทียบให้อัตโนมัติ</p>
+          <button class="btn btn-tinted btn-sm mt-5" @click="go('equipment')">เลือกอุปกรณ์</button>
+        </div>
+
+        <div x-show="cart.length" class="grid lg:grid-cols-5 gap-x-8 mt-5">
+          <div class="lg:col-span-3">
+            <div class="group-header" x-text="'อุปกรณ์ '+cart.length+' รายการ'"></div>
+            <div class="group">
+              <template x-for="c in cartChecks" :key="c.e.id">
+                <div class="row ic-lg items-start py-3">
+                  <span class="sq sq-md" :class="'bg-'+cat(c.e).k" x-html="ic(cat(c.e).icon,'w-[22px] h-[22px]')"></span>
+                  <div class="flex-1 min-w-0">
+                    <div class="truncate" x-text="c.e.name"></div>
+                    <div class="footnote t2" x-text="c.e.asset+' · Cal ถึง '+fmt(c.e.calDue)"></div>
+                    <template x-for="(i,n) in c.issues" :key="n">
+                      <div class="footnote mt-1 flex gap-1.5 items-start" :class="issueCls(i.t)"><span class="mt-[2px]" x-html="ic(i.t==='error' ? 'xCircle' : (i.t==='info' ? 'info' : 'alert'),'w-[14px] h-[14px]')"></span><span x-text="i.m"></span></div>
+                    </template>
+                    <div x-show="!c.issues.some(i=>i.t==='error')" class="footnote mt-1 c-green flex gap-1.5 items-center"><span x-html="ic('checkCircle','w-[14px] h-[14px]')"></span>พร้อมสำหรับช่วงเวลานี้</div>
+                  </div>
+                  <button class="c-red mt-2.5" title="นำออก" @click="toggleCart(c.e.id)" x-html="ic('minusCircle','w-[22px] h-[22px]')"></button>
+                </div>
+              </template>
+              <button class="row row-tap link sep" @click="go('equipment')"><span x-html="ic('plus','w-5 h-5')"></span>เพิ่มอุปกรณ์</button>
+            </div>
+
+            <div class="group-header mt-8">ช่วงเวลา</div>
+            <div class="group">
+              <div class="row"><span class="flex-1">วันที่รับ</span><input type="date" class="date-pill" x-model="form.start"></div>
+              <div class="row"><span class="flex-1">วันที่คืน</span><input type="date" class="date-pill" x-model="form.end"></div>
+              <div class="row"><span class="flex-1">ระยะเวลา</span><span class="val" x-text="loanSpan+' วัน'"></span></div>
+            </div>
+
+            <div class="group-header mt-8">รายละเอียดงาน</div>
+            <div class="group">
+              <label class="row"><span class="w-28 shrink-0">เลขที่ใบงาน</span><input class="field" placeholder="จำเป็น" x-model="form.job"></label>
+              <label class="row"><span class="w-28 shrink-0">ลูกค้า</span><input class="field" placeholder="ไม่บังคับ" x-model="form.customer"></label>
+              <div class="row"><span class="flex-1">สถานที่ใช้งาน</span>
+                <div class="seg w-[190px]"><button :class="{ on: form.site==='inhouse' }" @click="form.site='inhouse'">ในแล็บ</button><button :class="{ on: form.site==='onsite' }" @click="form.site='onsite'">นอกสถานที่</button></div>
+              </div>
+              <label class="row" x-show="form.site==='onsite'"><span class="w-28 shrink-0">ที่อยู่</span><input class="field" placeholder="สถานที่ลูกค้า" x-model="form.siteName"></label>
+              <label class="row items-start"><textarea class="field resize-none" rows="3" placeholder="หมายเหตุ" x-model="form.purpose"></textarea></label>
+            </div>
+            <p class="group-footer">ระบบจะแจ้งผลการอนุมัติทางอีเมลและ LINE</p>
+          </div>
+
+          <div class="lg:col-span-2">
+            <div class="lg:sticky lg:top-20">
+              <div class="group-header mt-8 lg:mt-0">สรุป</div>
+              <div class="group">
+                <div class="row"><span class="flex-1">อุปกรณ์</span><span class="val" x-text="cart.length+' รายการ'"></span></div>
+                <div class="row"><span class="flex-1">ช่วงเวลา</span><span class="val subhead" x-text="fmt(form.start)+' – '+fmt(form.end)"></span></div>
+                <div class="row"><span class="flex-1">การอนุมัติ</span><span class="val" x-text="cartNeedsApproval ? 'รอหัวหน้างาน' : 'อัตโนมัติ'"></span></div>
+                <div class="row ic">
+                  <span class="sq" :class="(cartErrors || globalIssues.length) ? 'bg-red' : 'bg-green'" x-html="ic((cartErrors || globalIssues.length) ? 'exclaim' : 'check','w-4 h-4')"></span>
+                  <span class="flex-1 subhead" x-text="cartErrors ? `ต้องแก้ไข ${cartErrors} รายการ` : (globalIssues.length ? globalIssues[0] : 'ผ่านการตรวจสอบทั้งหมด')"></span>
+                </div>
+              </div>
+              <button class="btn btn-filled w-full mt-4" :disabled="cartErrors>0 || globalIssues.length>0" @click="submitLoan()">ส่งคำขอยืม</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================== LOANS -->
+      <section x-show="page==='loans'">
+        <h1 class="large-title pt-1" x-text="role==='technician' ? 'การยืมของฉัน' : 'รายการยืม'"></h1>
+        <div class="seg seg-lg mt-3 max-w-md">
+          <template x-for="t in [['active','กำลังยืม'],['pending','รออนุมัติ'],['history','ประวัติ']]" :key="t[0]">
+            <button :class="{ on: loanTab===t[0] }" @click="loanTab=t[0]"><span x-text="t[1]"></span> <span class="t2 num" x-text="loansByTab(t[0]).length"></span></button>
+          </template>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-5 mt-6 items-start">
+          <template x-for="l in loansByTab(loanTab)" :key="l.no">
+            <div class="group">
+              <div class="px-4 pt-4 pb-4">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="min-w-0"><div class="headline truncate" x-text="role==='technician' ? l.customer : l.borrower"></div><div class="footnote t2" x-text="l.no+' · '+l.job"></div></div>
+                  <span class="footnote font-semibold shrink-0" :class="'c-'+ls(l).k" x-text="ls(l).l"></span>
+                </div>
+                <div class="tracker mt-5" x-show="!['rejected','cancelled'].includes(l.status)">
+                  <template x-for="(s,i) in ['ส่งคำขอ','อนุมัติ','รับอุปกรณ์','คืนแล้ว']" :key="i">
+                    <div :class="{ done: i < loanStep(l), past: i < loanStep(l)-1, cur: i===loanStep(l)-1 }" :style="`--tc:var(--${ls(l).key==='overdue' ? 'red' : (l.status==='returned' ? 'green' : 'blue')})`"><i></i><span x-text="s"></span></div>
+                  </template>
+                </div>
+              </div>
+              <template x-for="e in l.items.map(id=>eq(id))" :key="e.id">
+                <div class="row ic sep">
+                  <span class="sq" :class="'bg-'+cat(e).k" x-html="ic(cat(e).icon,'w-4 h-4')"></span>
+                  <span class="flex-1 min-w-0 subhead truncate" x-text="e.name"></span><span class="footnote t2 font-mono" x-text="e.asset"></span>
+                </div>
+              </template>
+              <div class="row sep footnote t2 flex-wrap gap-y-1">
+                <span class="flex items-center gap-1.5"><span x-html="ic('calendar','w-[14px] h-[14px]')"></span><span x-text="fmt(l.start)+' – '+fmt(l.end)"></span></span>
+                <span class="flex items-center gap-1.5 min-w-0"><span x-html="ic('pin','w-[14px] h-[14px]')"></span><span class="truncate" x-text="l.site"></span></span>
+                <span x-show="l.status==='checked_out'" class="ml-auto font-semibold" :class="days(l.end)<0 ? 'c-red' : (days(l.end)<=1 ? 'c-orange' : '')" x-text="'คืน'+relDays(days(l.end))"></span>
+              </div>
+              <template x-if="l.status==='checked_out'">
+                <div class="grid grid-cols-2 hairline-t">
+                  <button class="row row-tap justify-center link" @click="openExtend(l)">ขอต่ออายุ</button>
+                  <button class="row row-tap justify-center link font-semibold" style="box-shadow:inset .5px 0 0 var(--sep)" :disabled="l.returnRequested && role!=='custodian'" :class="{ 't3': l.returnRequested && role!=='custodian' }"
+                          @click="role==='custodian' ? startHandover(l.no,'in') : requestReturn(l)" x-text="role==='custodian' ? 'รับคืน' : (l.returnRequested ? 'แจ้งคืนแล้ว' : 'แจ้งคืน')"></button>
+                </div>
+              </template>
+              <template x-if="l.status==='approved'">
+                <div class="grid grid-cols-2 hairline-t">
+                  <button class="row row-tap justify-center c-red" @click="l.status='cancelled'; releaseItems(l); toast('ยกเลิกการจอง '+l.no+' แล้ว')">ยกเลิกการจอง</button>
+                  <button class="row row-tap justify-center link font-semibold" style="box-shadow:inset .5px 0 0 var(--sep)" @click="role==='custodian' ? startHandover(l.no,'out') : openPickup(l)" x-text="role==='custodian' ? 'จ่ายออก' : 'แสดง QR รับของ'"></button>
+                </div>
+              </template>
+              <template x-if="l.status==='pending'">
+                <div class="grid hairline-t" :class="canSee('approvals') ? 'grid-cols-2' : 'grid-cols-1'">
+                  <button class="row row-tap justify-center c-red" @click="l.status='cancelled'; toast('ยกเลิกคำขอ '+l.no+' แล้ว')">ยกเลิกคำขอ</button>
+                  <button x-show="canSee('approvals')" class="row row-tap justify-center link font-semibold" style="box-shadow:inset .5px 0 0 var(--sep)" @click="approve(l)">อนุมัติ</button>
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
+        <div x-show="!loansByTab(loanTab).length" class="empty">
+          <div class="glyph" x-html="ic('clipboard','w-12 h-12')"></div>
+          <div class="title2">ไม่มีรายการ</div>
+        </div>
+      </section>
+
+      <!-- ======================================================== APPROVALS -->
+      <section x-show="page==='approvals'">
+        <h1 class="large-title pt-1">รออนุมัติ</h1>
+        <p class="subhead t2 mt-1">ระบบตรวจอายุสอบเทียบและช่วงเวลาที่ชนกันให้แล้ว</p>
+        <div class="grid lg:grid-cols-2 gap-5 mt-6 items-start">
+          <template x-for="l in loans.filter(l=>l.status==='pending')" :key="l.no">
+            <div class="group">
+              <div class="row ic-av py-3.5">
+                <span class="avatar w-10 h-10 text-[14px]" x-text="initials(l.borrower)"></span>
+                <span class="flex-1 min-w-0"><span class="block headline" x-text="l.borrower"></span><span class="block footnote t2" x-text="l.no+' · ส่งเมื่อ '+fmt(l.created||'2026-11-16')"></span></span>
+              </div>
+              <template x-for="e in l.items.map(id=>eq(id))" :key="e.id">
+                <div class="row ic">
+                  <span class="sq" :class="'bg-'+cat(e).k" x-html="ic(cat(e).icon,'w-4 h-4')"></span>
+                  <span class="flex-1 min-w-0"><span class="block subhead truncate" x-text="e.name"></span><span class="block footnote t2" x-text="e.asset"></span></span>
+                  <span class="footnote flex items-center gap-1" :class="e.calDue>=l.end ? 'c-green' : 'c-red'"><span x-html="ic(e.calDue>=l.end ? 'checkCircle' : 'xCircle','w-[14px] h-[14px]')"></span><span x-text="'Cal ถึง '+fmt(e.calDue)"></span></span>
+                </div>
+              </template>
+              <div class="row"><span class="flex-1 t2 subhead">ใบงาน</span><span class="subhead" x-text="l.job"></span></div>
+              <div class="row"><span class="flex-1 t2 subhead">ลูกค้า</span><span class="subhead truncate max-w-[60%]" x-text="l.customer"></span></div>
+              <div class="row"><span class="flex-1 t2 subhead">ช่วงเวลา</span><span class="subhead" x-text="fmt(l.start)+' – '+fmt(l.end)"></span></div>
+              <div class="p-4 pt-2 grid grid-cols-2 gap-3">
+                <button class="btn btn-md btn-gray-red" @click="l.status='rejected'; log('ไม่อนุมัติคำขอ '+l.no,'red'); toast('ปฏิเสธคำขอ '+l.no+' แล้ว')">ไม่อนุมัติ</button>
+                <button class="btn btn-md btn-filled" @click="approve(l)">อนุมัติ</button>
+              </div>
+            </div>
+          </template>
+        </div>
+        <div x-show="!loans.some(l=>l.status==='pending')" class="empty">
+          <div class="glyph c-green" style="color:var(--green)" x-html="ic('checkCircle','w-12 h-12')"></div>
+          <div class="title2">ไม่มีคำขอค้าง</div>
+          <p class="subhead t2 mt-1">คำขอใหม่จะแสดงที่นี่</p>
+        </div>
+      </section>
+
+      <!-- ======================================================== SCAN -->
+      <section x-show="page==='scan'">
+        <h1 class="large-title pt-1">สแกน</h1>
+        <div class="max-w-md mx-auto lg:mx-0 mt-4">
+          <div class="camera">
+            <div class="absolute inset-0" style="background:radial-gradient(120% 80% at 30% 30%,#3a3a3c 0%,#1c1c1e 45%,#000 100%)"></div>
+            <div class="absolute inset-0 opacity-[.18]" style="background:repeating-linear-gradient(90deg,transparent 0 46px,rgba(255,255,255,.06) 46px 47px)"></div>
+            <div class="viewfinder" :class="scanState==='done' ? 'hit' : 'idle'"><span></span><span></span><span></span><span></span></div>
+            <div class="absolute top-5 inset-x-0 text-center"><span class="inline-block px-3 py-1 rounded-full bg-black/50 text-white footnote backdrop-blur">เล็งกล้องไปที่ QR Code บนอุปกรณ์</span></div>
+            <div class="absolute bottom-6 inset-x-0 flex items-center justify-center gap-5">
+              <button class="w-12 h-12 rounded-full bg-white/15 backdrop-blur text-white grid place-items-center" aria-label="ไฟฉาย" x-html="ic('flash','w-5 h-5')"></button>
+              <button class="w-[68px] h-[68px] rounded-full bg-white grid place-items-center" style="box-shadow:0 0 0 4px rgba(255,255,255,.35)" aria-label="จำลองการสแกน" @click="simulateScan()"><span class="w-[56px] h-[56px] rounded-full border-2 border-black/10"></span></button>
+              <button class="w-12 h-12 rounded-full bg-white/15 backdrop-blur text-white grid place-items-center" aria-label="พิมพ์รหัส" @click="$refs.manual.focus()" x-html="ic('keyboard','w-5 h-5')"></button>
+            </div>
+          </div>
+          <p class="footnote t2 text-center mt-3">แตะปุ่มกลางเพื่อจำลองการสแกน</p>
+
+          <div class="group mt-5">
+            <div class="row"><input x-ref="manual" class="field" placeholder="หรือพิมพ์รหัสทรัพย์สิน เช่น STD-EL-001" x-model="manualAsset" @keydown.enter="manualScan()"><button class="link subhead font-semibold" @click="manualScan()">ค้นหา</button></div>
+          </div>
+
+          <template x-if="scanResult">
+            <div class="group mt-5 rise">
+              <div class="row ic-lg py-3.5">
+                <span class="sq sq-md" :class="'bg-'+cat(scanResult).k" x-html="ic(cat(scanResult).icon,'w-[22px] h-[22px]')"></span>
+                <span class="flex-1 min-w-0">
+                  <span class="block headline truncate" x-text="scanResult.name"></span>
+                  <span class="block footnote t2" x-text="scanResult.asset+' · '+st(scanResult.status).l"></span>
+                  <span class="block footnote" :class="calText(scanResult)" x-text="'Cal ถึง '+fmt(scanResult.calDue)+' ('+relDays(days(scanResult.calDue))+')'"></span>
+                </span>
+              </div>
+              <div class="row" x-show="activeLoanOf(scanResult.id)"><span class="flex-1 t2 subhead">อยู่กับ</span><span class="subhead" x-text="activeLoanOf(scanResult.id) ? activeLoanOf(scanResult.id).borrower+' · '+activeLoanOf(scanResult.id).no : ''"></span></div>
+              <div class="p-4 pt-2 grid grid-cols-2 gap-3">
+                <button class="btn btn-md btn-gray" @click="openDetail(scanResult.id)">รายละเอียด</button>
+                <template x-if="role==='custodian' && activeLoanOf(scanResult.id)">
+                  <button class="btn btn-md btn-filled" @click="startHandover(activeLoanOf(scanResult.id).no, activeLoanOf(scanResult.id).status==='checked_out' ? 'in' : 'out')" x-text="activeLoanOf(scanResult.id).status==='checked_out' ? 'รับคืน' : 'จ่ายออก'"></button>
+                </template>
+                <template x-if="role!=='custodian' || !activeLoanOf(scanResult.id)">
+                  <button class="btn btn-md btn-filled" :disabled="!canBorrow(scanResult).ok" @click="if(!inCart(scanResult.id)) toggleCart(scanResult.id); go('cart')">ยืมอุปกรณ์นี้</button>
+                </template>
+              </div>
+            </div>
+          </template>
+        </div>
+      </section>
+
+      <!-- ======================================================== HANDOVER -->
+      <section x-show="page==='handover'">
+        <div x-show="!handover.loanNo">
+          <h1 class="large-title pt-1">จ่ายออก / รับคืน</h1>
+          <div class="grid lg:grid-cols-2 gap-x-6 mt-5">
+            <template x-for="grp in handoverGroups" :key="grp.m">
+              <div class="mb-8">
+                <div class="group-header flex justify-between"><span x-text="grp.t"></span><span x-text="grp.list.length+' รายการ'"></span></div>
+                <div class="group">
+                  <template x-for="l in grp.list" :key="l.no">
+                    <button class="row row-tap ic-av" @click="startHandover(l.no, grp.m)">
+                      <span class="avatar w-9 h-9 text-[13px]" x-text="initials(l.borrower)"></span>
+                      <span class="flex-1 min-w-0">
+                        <span class="block truncate" x-text="l.borrower"></span>
+                        <span class="block footnote t2 truncate" x-text="l.items.map(id=>eq(id).asset).join(', ')+' · '+(grp.m==='out' ? 'รับ '+fmt(l.start) : 'คืน '+fmt(l.end))"></span>
+                      </span>
+                      <span x-show="ls(l).key==='overdue'" class="footnote c-red font-semibold">เกินกำหนด</span>
+                      <span x-show="l.returnRequested" class="footnote c-orange font-semibold">แจ้งคืนแล้ว</span>
+                      <span x-html="chev"></span>
+                    </button>
+                  </template>
+                  <div x-show="!grp.list.length" class="row justify-center t2 py-6">ไม่มีรายการ</div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <template x-if="handover.loanNo && hoLoan">
+          <div class="max-w-2xl">
+            <h1 class="large-title pt-1" x-text="handover.mode==='out' ? 'จ่ายออก' : 'รับคืน'"></h1>
+            <p class="subhead t2" x-text="hoLoan.borrower+' · '+hoLoan.no+' · '+hoLoan.job"></p>
+
+            <template x-for="e in hoLoan.items.map(id=>eq(id))" :key="e.id">
+              <div class="mt-7">
+                <div class="group-header flex justify-between items-end"><span x-text="e.asset+' · '+e.name"></span></div>
+                <div class="group">
+                  <template x-for="item in hoChecklist(e)" :key="item">
+                    <button class="row row-tap checkbox-row" :class="{ on: handover.checks[e.id+'|'+item] }" @click="handover.checks[e.id+'|'+item] = !handover.checks[e.id+'|'+item]">
+                      <span class="flex-1" x-text="item"></span><span class="check" x-html="ic('check','w-5 h-5')"></span>
+                    </button>
+                  </template>
+                </div>
+              </div>
+            </template>
+            <p class="group-footer flex justify-between"><span>แตะเพื่อยืนยันแต่ละรายการ</span><button class="link" @click="checkAll()">เลือกทั้งหมด</button></p>
+
+            <div x-show="handover.mode==='in'">
+              <div class="group-header mt-7">สภาพเมื่อรับคืน</div>
+              <div class="group p-3">
+                <div class="seg seg-lg">
+                  <template x-for="o in [['ok','ปกติ'],['minor','มีตำหนิเล็กน้อย'],['damaged','เสียหาย']]" :key="o[0]">
+                    <button :class="{ on: handover.condition===o[0] }" @click="handover.condition=o[0]" x-text="o[1]"></button>
+                  </template>
+                </div>
+              </div>
+              <p x-show="handover.condition==='damaged'" class="group-footer c-red">อุปกรณ์จะถูกกักกัน (Quarantine) และแจ้ง Quality Manager อัตโนมัติ</p>
+            </div>
+
+            <div class="group-header mt-7">รูปถ่าย</div>
+            <div class="group p-3 flex flex-wrap gap-2">
+              <template x-for="(p,i) in handover.photos" :key="i"><img :src="p" class="w-[76px] h-[76px] rounded-[10px] object-cover"></template>
+              <label class="w-[76px] h-[76px] rounded-[10px] grid place-items-center tint" style="background:var(--fill)">
+                <span class="text-center"><span class="block w-fit mx-auto" x-html="ic('camera','w-6 h-6')"></span><span class="caption">ถ่ายรูป</span></span>
+                <input type="file" accept="image/*" capture="environment" multiple class="sr-only" @change="addPhotos($event)">
+              </label>
+            </div>
+
+            <div class="group-header mt-7">หมายเหตุ</div>
+            <div class="group"><label class="row items-start"><textarea class="field resize-none" rows="2" placeholder="ไม่บังคับ" x-model="handover.note"></textarea></label></div>
+
+            <div class="group-header mt-7 flex justify-between"><span x-text="'ลายมือชื่อผู้'+(handover.mode==='out' ? 'รับ' : 'คืน')"></span><button class="link" @click="clearSig()">ล้าง</button></div>
+            <div class="group relative">
+              <canvas x-ref="sig" class="sig"></canvas>
+              <div class="absolute left-5 right-5 bottom-10 hairline-t pointer-events-none"></div>
+              <span x-show="!handover.signed" class="absolute inset-0 grid place-items-center t3 subhead pointer-events-none">เซ็นชื่อที่นี่</span>
+            </div>
+            <p class="group-footer" x-text="hoLoan.borrower+' · '+longDate"></p>
+
+            <div class="bottom-action mt-8">
+              <div class="material rounded-[20px] p-2.5 flex items-center gap-3" style="box-shadow:0 0 0 .5px var(--sep),0 8px 28px rgba(0,0,0,.1)">
+                <div class="flex-1 pl-2 footnote"><span class="font-semibold num" x-text="hoProgress.done+'/'+hoProgress.total"></span> <span class="t2">ตรวจแล้ว</span><span x-show="!handover.signed" class="c-orange"> · ยังไม่เซ็น</span></div>
+                <button class="btn btn-md btn-filled" :disabled="hoProgress.done<hoProgress.total || !handover.signed" @click="confirmHandover()" x-text="handover.mode==='out' ? 'ยืนยันจ่ายออก' : 'ยืนยันรับคืน'"></button>
+              </div>
+            </div>
+          </div>
+        </template>
+      </section>
+
+      <!-- ======================================================== CALIBRATION -->
+      <section x-show="page==='calibration'">
+        <div class="flex items-end justify-between pt-1">
+          <h1 class="large-title">สอบเทียบ</h1>
+          <select class="picker picker-tint mb-2" @change="toast('ส่งออก Cal Due List ('+$event.target.value+') แล้ว'); $event.target.selectedIndex=0">
+            <option>ส่งออก</option><option>Excel</option><option>PDF</option>
+          </select>
+        </div>
+        <div class="seg seg-lg mt-3 max-w-xl">
+          <template x-for="c in calSummary" :key="c.k">
+            <button :class="{ on: calFilter===c.k }" @click="calFilter=c.k"><span x-text="c.l"></span> <span class="num" :class="c.n && c.k!=='all' ? 'c-'+c.tone : 't2'" x-text="c.n"></span></button>
+          </template>
+        </div>
+        <div class="group mt-6">
+          <template x-for="e in calRows" :key="e.id">
+            <button class="row row-tap ic py-3" @click="openCal(e)">
+              <span class="sq" :class="'bg-'+cat(e).k" x-html="ic(cat(e).icon,'w-[17px] h-[17px]')"></span>
+              <span class="flex-1 min-w-0">
+                <span class="block truncate" x-text="e.name"></span>
+                <span class="block footnote t2 truncate" x-text="e.asset+' · '+e.lab"></span>
+                <span class="block mt-1.5 h-[4px] w-full max-w-[220px] rounded-full overflow-hidden" style="background:var(--fill)"><span class="block h-full rounded-full" :class="'bg-'+calTone(e)" :style="`width:${calRemainPct(e)}%`"></span></span>
+              </span>
+              <span class="hidden md:block w-28 footnote t2 text-right" x-text="st(e.status).l"></span>
+              <span class="text-right shrink-0 w-24"><span class="block subhead" :class="calText(e)" x-text="relDays(days(e.calDue))"></span><span class="block footnote t2" x-text="fmt(e.calDue)"></span></span>
+              <span x-html="chev"></span>
+            </button>
+          </template>
+          <div x-show="!calRows.length" class="row justify-center t2 py-8">ไม่มีรายการ</div>
+        </div>
+        <p class="group-footer">แตะรายการเพื่อบันทึกผลการสอบเทียบใหม่</p>
+      </section>
+
+      <!-- ======================================================== OOT -->
+      <section x-show="page==='oot'">
+        <h1 class="large-title pt-1">ผลกระทบ OOT</h1>
+        <template x-if="ootEq">
+          <div class="mt-5">
+            <div class="group">
+              <div class="row ic-lg py-4 items-start">
+                <span class="sq sq-md bg-red" x-html="ic('shield','w-[22px] h-[22px]')"></span>
+                <div class="flex-1 min-w-0">
+                  <div class="footnote font-semibold c-red">ผิดพิกัด · กักกันแล้ว</div>
+                  <div class="headline mt-0.5" x-text="ootEq.name"></div>
+                  <div class="footnote t2" x-text="ootEq.asset+' · '+ootEq.brand+' '+ootEq.model"></div>
+                  <p class="subhead mt-2" x-text="ootEq.oot ? ootEq.oot.detail : 'ผลสอบเทียบไม่ผ่านเกณฑ์ที่กำหนด'"></p>
+                </div>
+              </div>
+              <div class="row" x-show="equipment.filter(e=>e.status==='quarantine').length > 1"><span class="flex-1">อุปกรณ์</span>
+                <select class="picker" x-model.number="ootId"><template x-for="e in equipment.filter(e=>e.status==='quarantine')" :key="e.id"><option :value="e.id" x-text="e.asset"></option></template></select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mt-4">
+              <div class="group tile"><div class="subhead font-semibold c-orange">งานที่เกี่ยวข้อง</div><div class="mt-3"><span class="num text-[34px] font-bold leading-none" x-text="ootAffected.length"></span> <span class="subhead t2">งาน</span></div></div>
+              <div class="group tile"><div class="subhead font-semibold c-blue">แจ้งลูกค้าแล้ว</div><div class="mt-3"><span class="num text-[34px] font-bold leading-none" x-text="ootAffected.filter(l=>l.notified).length"></span> <span class="subhead t2" x-text="'จาก '+ootAffected.length"></span></div></div>
+            </div>
+
+            <div class="grid lg:grid-cols-5 gap-x-6">
+              <div class="lg:col-span-3">
+                <div class="group-header mt-8" x-text="'ใช้งานตั้งแต่ '+fmt(ootEq.calDate)+' ถึง '+fmt(ootEq.oot ? ootEq.oot.found : '2026-11-17')"></div>
+                <div class="group">
+                  <template x-for="l in ootAffected" :key="l.no">
+                    <div class="row">
+                      <span class="flex-1 min-w-0"><span class="block truncate" x-text="l.customer"></span><span class="block footnote t2 truncate" x-text="l.job+' · '+l.borrower+' · '+fmt(l.start)"></span></span>
+                      <button class="switch" :class="{ on: l.notified }" @click="l.notified = !l.notified" :aria-label="'แจ้งลูกค้า '+l.customer"><span></span></button>
+                    </div>
+                  </template>
+                  <div x-show="!ootAffected.length" class="row justify-center t2 py-8">ไม่พบการใช้งานในช่วงเวลานี้</div>
+                </div>
+                <p class="group-footer">เปิดสวิตช์เมื่อแจ้งลูกค้าเรียบร้อยแล้ว (ISO/IEC 17025 ข้อ 7.10)</p>
+              </div>
+              <div class="lg:col-span-2">
+                <div class="group-header mt-8">การประเมิน</div>
+                <div class="group">
+                  <div class="row"><span class="flex-1">ผลกระทบ</span><select class="picker"><option>มีผลกระทบ</option><option>บางส่วน</option><option>ไม่มีผลกระทบ</option></select></div>
+                  <div class="row"><span class="flex-1">ดำเนินการ</span><select class="picker"><option>ซ่อมและสอบเทียบใหม่</option><option>Limited Use</option><option>ปลดระวาง</option></select></div>
+                  <label class="row items-start"><textarea class="field resize-none" rows="3" placeholder="รายละเอียดการประเมิน"></textarea></label>
+                </div>
+                <button class="btn btn-filled w-full mt-4" @click="log('บันทึกการประเมิน OOT '+ootEq.asset,'red'); toast('บันทึกการประเมินและส่งอนุมัติแล้ว')">บันทึกและส่งอนุมัติ</button>
+                <button class="btn btn-gray w-full mt-3" @click="toast('สร้างรายงาน OOT (PDF) แล้ว')">ออกรายงาน PDF</button>
+              </div>
+            </div>
+          </div>
+        </template>
+        <div x-show="!ootEq" class="empty"><div class="glyph" x-html="ic('shield','w-12 h-12')"></div><div class="title2">ไม่มีอุปกรณ์ที่ถูกกักกัน</div></div>
+      </section>
+
+      <!-- ======================================================== MORE (mobile) -->
+      <section x-show="page==='more'">
+        <h1 class="large-title pt-1">เพิ่มเติม</h1>
+        <div class="group mt-5">
+          <div class="row py-3" style="--inset:84px">
+            <span class="avatar w-14 h-14 text-[20px]" x-text="me.initials"></span>
+            <span class="flex-1 min-w-0"><span class="block title3" x-text="me.name"></span><span class="block subhead t2" x-text="me.label"></span></span>
+          </div>
+        </div>
+        <div class="group mt-8" x-show="moreItems.length">
+          <template x-for="n in moreItems" :key="n.id">
+            <button class="row row-tap ic" @click="go(n.id)">
+              <span class="sq" :class="'bg-'+n.k" x-html="ic(n.icon,'w-[17px] h-[17px]')"></span>
+              <span class="flex-1" x-text="n.label"></span>
+              <span x-show="n.badge" class="val num" x-text="n.badge"></span><span x-html="chev"></span>
+            </button>
+          </template>
+        </div>
+        <div class="group-header mt-8">มุมมองบทบาท (ทดลอง)</div>
+        <div class="group">
+          <template x-for="(r,k) in roles" :key="k">
+            <button class="row row-tap checkbox-row" :class="{ on: role===k }" @click="switchRole(k)">
+              <span class="flex-1 min-w-0"><span class="block" x-text="r.label"></span><span class="block footnote t2" x-text="r.name"></span></span>
+              <span class="check" x-html="ic('check','w-5 h-5')"></span>
+            </button>
+          </template>
+        </div>
+        <div class="group mt-8">
+          <div class="row ic"><span class="sq bg-indigo" x-html="ic('moon','w-4 h-4')"></span><span class="flex-1">โหมดมืด</span><button class="switch" :class="{ on: dark }" @click="dark=!dark"><span></span></button></div>
+          <div class="row ic"><span class="sq bg-gray" x-html="ic('info','w-4 h-4')"></span><span class="flex-1">เวอร์ชัน</span><span class="val">1.0 (Demo)</span></div>
+        </div>
+        <div class="group mt-8"><button class="row row-tap justify-center c-red" @click="loggedIn=false">ออกจากระบบ</button></div>
+      </section>
+
+      <p class="text-center caption t3 mt-14">SEMS · ข้อมูลจำลอง · วันที่ระบบ 17 พ.ย. 2569</p>
+    </main>
+  </div>
+
+  <!-- Tab bar · iOS 26 -->
+  <nav class="tabbar lg:hidden">
+    <template x-for="t in tabs" :key="t.id">
+      <button class="tab" :class="{ on: tabActive(t.id) }" @click="go(t.id)">
+        <span x-html="ic(t.icon,'w-[23px] h-[23px]')"></span><span x-text="t.label"></span>
+        <span x-show="t.badge" class="badge-count" x-text="t.badge"></span>
+      </button>
+    </template>
+  </nav>
+
+  <!-- Notifications popover -->
+  <div x-show="notifOpen" class="fixed inset-0 z-50" @click="notifOpen=false"></div>
+  <div x-show="notifOpen" x-transition.opacity.duration.150ms class="popover">
+    <div class="px-4 pt-4 pb-2 flex items-baseline justify-between"><span class="title3">การแจ้งเตือน</span><button class="subhead link" @click="notifOpen=false">เสร็จ</button></div>
+    <div>
+      <template x-for="(n,i) in notifications" :key="i">
+        <button class="row row-tap ic items-start" @click="go(n.go)">
+          <span class="sq mt-0.5" :class="'bg-'+n.k" x-html="ic(n.icon,'w-4 h-4')"></span>
+          <span class="flex-1 min-w-0"><span class="flex justify-between gap-2"><span class="subhead font-semibold truncate" x-text="n.title"></span><span class="footnote t2 shrink-0" x-text="n.t"></span></span><span class="block footnote t2" x-text="n.sub"></span></span>
+        </button>
+      </template>
+    </div>
+  </div>
+
+  <!-- Sheet -->
+  <div x-show="modal.open" x-transition.opacity class="scrim" @click="modal.open=false"></div>
+  <div x-show="modal.open" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-8" x-transition:leave="transition ease-in duration-150" x-transition:leave-end="opacity-0" class="sheet">
+    <div class="sm:hidden grabber"></div>
+
+    <template x-if="modal.type==='extend' && modal.loan">
+      <div>
+        <div class="sheet-bar"><button class="link justify-self-start" @click="modal.open=false">ยกเลิก</button><span class="headline">ต่ออายุการยืม</span><button class="link font-semibold justify-self-end" :class="{ 'opacity-30 pointer-events-none': extendIssues.some(i=>i.t==='error') }" @click="confirmExtend()">ยืนยัน</button></div>
+        <div class="px-4 pt-2">
+          <div class="group">
+            <div class="row"><span class="flex-1">ใบยืม</span><span class="val" x-text="modal.loan.no"></span></div>
+            <div class="row"><span class="flex-1">คืนเดิม</span><span class="val" x-text="fmt(modal.loan.end)"></span></div>
+            <div class="row"><span class="flex-1">คืนใหม่</span><input type="date" class="date-pill" x-model="modal.date"></div>
+            <label class="row"><span class="w-24 shrink-0">เหตุผล</span><input class="field" placeholder="เช่น งานเพิ่ม 5 จุด"></label>
+          </div>
+          <div class="mt-3 px-4 space-y-1.5">
+            <template x-for="(i,n) in extendIssues" :key="n"><div class="footnote flex gap-1.5 items-start" :class="issueCls(i.t)"><span class="mt-[2px]" x-html="ic(i.t==='error' ? 'xCircle' : 'checkCircle','w-[14px] h-[14px]')"></span><span x-text="i.m"></span></div></template>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <template x-if="modal.type==='cal' && modal.eq">
+      <div>
+        <div class="sheet-bar"><button class="link justify-self-start" @click="modal.open=false">ยกเลิก</button><span class="headline">ผลสอบเทียบ</span><button class="link font-semibold justify-self-end" @click="saveCal()">บันทึก</button></div>
+        <div class="px-4 pt-2">
+          <div class="group">
+            <div class="row ic"><span class="sq" :class="'bg-'+cat(modal.eq).k" x-html="ic(cat(modal.eq).icon,'w-4 h-4')"></span><span class="flex-1 min-w-0"><span class="block truncate" x-text="modal.eq.name"></span><span class="block footnote t2" x-text="modal.eq.asset"></span></span></div>
+          </div>
+          <div class="group mt-6">
+            <div class="row"><span class="flex-1">วันที่สอบเทียบ</span><input type="date" class="date-pill" x-model="calForm.date"></div>
+            <div class="row"><span class="flex-1">ครบกำหนดถัดไป</span><span class="val" x-text="fmt(addMonths(calForm.date, modal.eq.interval))"></span></div>
+            <label class="row"><span class="w-32 shrink-0">ห้องปฏิบัติการ</span><input class="field field-r" x-model="calForm.lab"></label>
+            <label class="row"><span class="w-32 shrink-0">เลขใบรับรอง</span><input class="field field-r" placeholder="Cert No." x-model="calForm.cert"></label>
+          </div>
+          <div class="group-header mt-6">ผลการสอบเทียบ</div>
+          <div class="group p-3"><div class="seg seg-lg"><button :class="{ on: calForm.result==='pass' }" @click="calForm.result='pass'">ผ่าน</button><button :class="{ on: calForm.result==='fail' }" @click="calForm.result='fail'">ไม่ผ่าน (OOT)</button></div></div>
+          <p x-show="calForm.result==='fail'" class="group-footer c-red">อุปกรณ์จะถูกกักกันและเปิดการประเมินผลกระทบทันที</p>
+          <div class="group mt-6"><label class="row row-tap link justify-center"><span x-html="ic('paperclip','w-[18px] h-[18px]')"></span>แนบใบรับรอง (PDF)<input type="file" accept="application/pdf" class="sr-only"></label></div>
+        </div>
+      </div>
+    </template>
+
+    <template x-if="modal.type==='pickup' && modal.loan">
+      <div>
+        <div class="sheet-bar"><span></span><span class="headline">QR รับอุปกรณ์</span><button class="link font-semibold justify-self-end" @click="modal.open=false">เสร็จ</button></div>
+        <div class="px-4 pt-2 pb-2 text-center">
+          <div class="group p-6">
+            <div class="w-52 h-52 mx-auto p-3 rounded-2xl bg-white text-black" x-html="qr(modal.loan.no)"></div>
+            <div class="title3 mt-4 font-mono" x-text="modal.loan.no"></div>
+            <p class="subhead t2 mt-1" x-text="'แสดงให้ผู้ดูแลคลังสแกน · รับได้ '+fmt(modal.loan.start)"></p>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>
+
+  <!-- Toast -->
+  <div x-show="toastMsg" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-3" x-transition:leave="transition duration-200" x-transition:leave-end="opacity-0" class="toast" style="transform:translateX(-50%)">
+    <span class="w-7 h-7 rounded-full grid place-items-center shrink-0" :class="toastType==='error' ? 'bg-red' : 'bg-green'" x-html="ic(toastType==='error' ? 'exclaim' : 'check','w-4 h-4')"></span>
+    <span x-text="toastMsg"></span>
+  </div>
+</div>
+
+<script>
+const ICONS = {
+  home:'<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
+  box:'<path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/>',
+  scan:'<path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="4" height="4" rx=".5"/><rect x="13" y="13" width="4" height="4" rx=".5"/><path d="M13 7h4v4M7 13v4h4"/>',
+  clipboard:'<rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6M9 16h4"/>',
+  checkCircle:'<circle cx="12" cy="12" r="10"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/>',
+  xCircle:'<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/>',
+  minusCircle:'<circle cx="12" cy="12" r="10" fill="currentColor" stroke="none"/><path d="M8 12h8" stroke="#fff" stroke-width="2.2"/>',
+  gauge:'<path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/>',
+  alert:'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  exclaim:'<path d="M12 6v7"/><path d="M12 17.5h.01"/>',
+  arrows:'<path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/>',
+  arrowUp:'<path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>',
+  arrowDown:'<path d="M12 5v14"/><path d="m19 12-7 7-7-7"/>',
+  bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+  moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2m-7.07-17.07 1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+  search:'<circle cx="11" cy="11" r="7.5"/><path d="m21 21-4.6-4.6"/>',
+  bag:'<path d="M6 7h12l1 13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1z"/><path d="M9 7V6a3 3 0 0 1 6 0v1"/>',
+  plus:'<path d="M5 12h14"/><path d="M12 5v14"/>',
+  x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  chevL:'<path d="m15 18-6-6 6-6"/>',
+  pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+  calendar:'<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  shield:'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M12 8v4"/><path d="M12 16h.01"/>',
+  file:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+  camera:'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
+  logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>',
+  zap:'<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>',
+  flash:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
+  keyboard:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 9h.01M10 9h.01M14 9h.01M18 9h.01M6 13h.01M18 13h.01M8 16h8"/>',
+  thermo:'<path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/>',
+  ruler:'<path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/>',
+  weight:'<circle cx="12" cy="5" r="3"/><path d="M6.5 8a2 2 0 0 0-1.905 1.46L2.1 18.5A2 2 0 0 0 4 21h16a2 2 0 0 0 1.925-2.54L19.4 9.5A2 2 0 0 0 17.48 8Z"/>',
+  wrench:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+  droplet:'<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',
+  info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+  more:'<circle cx="5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="19" cy="12" r="1.6" fill="currentColor"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  printer:'<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/>',
+  download:'<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>',
+  lock:'<rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  truck:'<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>',
+  paperclip:'<path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/>',
+  person:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+};
+const TODAY = '2026-11-17';
+
+function sems() {
+  return {
+    loggedIn: false, dark: false, page: 'dashboard', notifOpen: false, scrolled: false,
+    role: 'technician',
+    roles: {
+      technician: { label: 'ช่างสอบเทียบ', name: 'สมชาย ใจดี', initials: 'สจ' },
+      custodian:  { label: 'ผู้ดูแลคลัง Standard', name: 'อรุณี แสงทอง', initials: 'อส' },
+      supervisor: { label: 'หัวหน้างาน', name: 'ประเสริฐ วงศ์ใหญ่', initials: 'ปว' },
+      qm:         { label: 'Quality Manager', name: 'ดร.กมล ศรีสุข', initials: 'กศ' },
+    },
+    q: '', catFilter: 'all', statusFilter: 'all',
+    selectedId: null, detailTab: 'info',
+    cart: [],
+    form: { job: '', customer: '', site: 'inhouse', siteName: '', start: '2026-11-23', end: '2026-11-25', purpose: '' },
+    loanTab: 'active', loanSeq: 49,
+    scanState: 'idle', scanResult: null, manualAsset: '', scanIdx: 0,
+    handover: { mode: 'out', loanNo: null, checks: {}, condition: 'ok', note: '', signed: false, photos: [] },
+    calFilter: 'all',
+    modal: { open: false, type: null, loan: null, eq: null, date: '' },
+    calForm: { date: TODAY, lab: '', cert: '', result: 'pass' },
+    ootId: 8,
+    toastMsg: '', toastType: 'success', toastTimer: null,
+    chev: '<svg class="chev" width="8" height="13" viewBox="0 0 8 13" fill="none"><path d="M1.5 1.5 6.5 6.5 1.5 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+
+    statuses: {
+      available:  { l: 'พร้อมใช้งาน', k: 'green' },
+      reserved:   { l: 'ถูกจอง', k: 'purple' },
+      on_loan:    { l: 'กำลังถูกยืม', k: 'blue' },
+      checking:   { l: 'รอตรวจหลังคืน', k: 'yellow' },
+      out_cal:    { l: 'ส่งสอบเทียบ', k: 'orange' },
+      repair:     { l: 'ส่งซ่อม', k: 'gray' },
+      quarantine: { l: 'กักกัน', k: 'red' },
+    },
+    cats: {
+      Electrical:  { th: 'ไฟฟ้า', icon: 'zap', k: 'orange' },
+      Pressure:    { th: 'ความดัน', icon: 'gauge', k: 'blue' },
+      Temperature: { th: 'อุณหภูมิ', icon: 'thermo', k: 'red' },
+      Dimension:   { th: 'มิติ', icon: 'ruler', k: 'indigo' },
+      Mass:        { th: 'มวล', icon: 'weight', k: 'green' },
+      Torque:      { th: 'แรงบิด', icon: 'wrench', k: 'gray' },
+      Humidity:    { th: 'ความชื้น', icon: 'droplet', k: 'teal' },
+    },
+
+    equipment: [
+      { id:1, asset:'STD-EL-001', name:'Multifunction Calibrator', brand:'Fluke', model:'5522A', sn:'4412087', cat:'Electrical', level:'Reference', range:'0–1020 V, 0–20.5 A', accuracy:'±0.0011 % (DCV)', loc:'Cal-1 · ตู้ A1', status:'available', calDate:'2026-03-10', calDue:'2027-03-10', interval:12, lab:'NIMT', cert:'NIMT-E-26-0312', approval:true, maxDays:5, offsite:false, check:true, accessories:['สายวัด 5440A','สายไฟ AC','สาย GPIB','คู่มือ'] },
+      { id:2, asset:'STD-PR-003', name:'Automated Pressure Calibrator', brand:'Additel', model:'ADT761A', sn:'761A-22091', cat:'Pressure', level:'Working', range:'-0.95 – 20 bar', accuracy:'±0.02 %FS', loc:'Cal-2 · ตู้ B2', status:'on_loan', calDate:'2026-05-02', calDue:'2027-05-02', interval:12, lab:'TPA Calibration', cert:'TPA-P-26-0877', approval:false, maxDays:7, offsite:true, check:false, accessories:['สาย Test hose 1 m','ชุด Adapter','แบตเตอรี่','กระเป๋า'] },
+      { id:3, asset:'STD-TM-002', name:'Field Metrology Well', brand:'Fluke', model:'9142', sn:'B39015', cat:'Temperature', level:'Working', range:'-25 – 150 °C', accuracy:'±0.2 °C', loc:'Cal-3 · ชั้น C1', status:'available', calDate:'2025-12-05', calDue:'2026-12-05', interval:12, lab:'NIMT', cert:'NIMT-T-25-1544', approval:false, maxDays:7, offsite:true, check:false, accessories:['Insert 9142-INSA','สายไฟ AC','คีมคีบ'] },
+      { id:4, asset:'STD-TM-005', name:'Reference Thermometer + SPRT', brand:'Fluke', model:'1524 / 5615', sn:'1524-77012', cat:'Temperature', level:'Reference', range:'-200 – 420 °C', accuracy:'±0.011 °C', loc:'Cal-3 · ตู้ C3', status:'reserved', calDate:'2026-08-20', calDue:'2027-08-20', interval:12, lab:'NIMT', cert:'NIMT-T-26-0960', approval:true, maxDays:3, offsite:false, check:true, accessories:['PRT 5615-12','Thermocouple input','กล่องเก็บ'] },
+      { id:5, asset:'STD-DM-001', name:'Gauge Block Set Grade 0', brand:'Mitutoyo', model:'516-940-26', sn:'GB-0112-018', cat:'Dimension', level:'Reference', range:'0.5 – 100 mm (112 ชิ้น)', accuracy:'Grade 0 (ISO 3650)', loc:'ห้อง Dimension', status:'available', calDate:'2026-01-15', calDue:'2027-01-15', interval:12, lab:'NIMT', cert:'NIMT-D-26-0045', approval:true, maxDays:3, offsite:false, check:true, accessories:['กล่องไม้','ถุงมือ','น้ำมันกันสนิม'] },
+      { id:6, asset:'STD-MS-002', name:'Weight Set Class F1', brand:'Mettler Toledo', model:'F1 1 mg – 5 kg', sn:'MT-F1-30421', cat:'Mass', level:'Reference', range:'1 mg – 5 kg', accuracy:'OIML Class F1', loc:'ห้อง Mass · ตู้ M1', status:'on_loan', calDate:'2026-02-28', calDue:'2027-02-28', interval:12, lab:'NIMT', cert:'NIMT-M-26-0188', approval:false, maxDays:5, offsite:true, check:true, accessories:['กล่องตุ้มน้ำหนัก','ปากคีบ','ถุงมือ'] },
+      { id:7, asset:'STD-EL-004', name:'7½ Digit Multimeter', brand:'Keysight', model:'34470A', sn:'MY59012233', cat:'Electrical', level:'Working', range:'100 mV – 1000 V, 10 A', accuracy:'±0.0016 % (DCV)', loc:'Cal-1 · ตู้ A2', status:'available', calDate:'2025-11-28', calDue:'2026-11-28', interval:12, lab:'Keysight Service', cert:'KS-25-11-4471', approval:false, maxDays:7, offsite:true, check:false, accessories:['Test lead 34138A','สายไฟ AC','สาย USB'] },
+      { id:8, asset:'STD-PR-006', name:'Advanced Pressure Calibrator', brand:'Druck', model:'DPI 620 Genii', sn:'620G-11872', cat:'Pressure', level:'Working', range:'0 – 35 bar', accuracy:'±0.025 %FS', loc:'พื้นที่กักกัน', status:'quarantine', calDate:'2025-11-08', calDue:'2026-11-08', interval:12, lab:'TPA Calibration', cert:'TPA-P-25-1182', approval:false, maxDays:7, offsite:true, check:false, accessories:['PM620 module','ชุดสาย Hose','ที่ชาร์จ'],
+        oot: { found:'2026-11-10', detail:'ผลสอบเทียบรอบใหม่วันที่ 10 พ.ย. 69 พบค่าคลาดเคลื่อน +0.046 %FS ที่ 20 bar เกินเกณฑ์ ±0.025 %FS' } },
+      { id:9, asset:'STD-TQ-001', name:'Torque Transducer Tester', brand:'Norbar', model:'TTT 1500', sn:'NB-43301', cat:'Torque', level:'Working', range:'1 – 1500 N·m', accuracy:'±0.5 % of reading', loc:'ส่งแล็บภายนอก', status:'out_cal', calDate:'2025-11-12', calDue:'2026-11-12', interval:12, lab:'Torque Lab', cert:'TLC-25-0981', approval:false, maxDays:7, offsite:true, check:false, accessories:['Transducer 1500 N·m','Square drive adapter'] },
+      { id:10, asset:'STD-EL-007', name:'Advanced Field Calibrator', brand:'Beamex', model:'MC6', sn:'MC6-260455', cat:'Electrical', level:'Working', range:'mA, V, Ω, TC, RTD', accuracy:'±(0.01 %RDG + 1 µA)', loc:'Cal-2 · ตู้ B1', status:'available', calDate:'2026-06-30', calDue:'2027-06-30', interval:12, lab:'Beamex Service', cert:'BX-26-06-2210', approval:false, maxDays:7, offsite:true, check:false, accessories:['ชุด Test lead','ที่ชาร์จ','Pressure module EXT','กระเป๋า'] },
+      { id:11, asset:'STD-HM-001', name:'Humidity Calibrator', brand:'Vaisala', model:'HMK15', sn:'V-HMK-1023', cat:'Humidity', level:'Working', range:'11 – 97 %RH', accuracy:'±1.5 %RH', loc:'Cal-3 · ชั้น C2', status:'available', calDate:'2025-12-30', calDue:'2026-12-30', interval:12, lab:'NIMT', cert:'NIMT-H-25-0702', approval:false, maxDays:7, offsite:false, check:false, accessories:['Salt chamber ×3','Adapter 12 mm','ถ้วยตวง'] },
+      { id:12, asset:'STD-DM-004', name:'Check Master', brand:'Mitutoyo', model:'515-585', sn:'CM-58520', cat:'Dimension', level:'Working', range:'0 – 600 mm', accuracy:'±(1.1+0.6L/600) µm', loc:'ส่งซ่อมตัวแทน', status:'repair', calDate:'2026-01-20', calDue:'2027-01-20', interval:12, lab:'NIMT', cert:'NIMT-D-26-0071', approval:true, maxDays:3, offsite:false, check:true, accessories:['ฐานรอง','กล่องเก็บ'] },
+    ],
+
+    loans: [
+      { no:'LN-2611-0042', borrower:'สมชาย ใจดี', items:[2], job:'WO-26-1187', customer:'บจก. สยามออโต้พาร์ท', site:'อมตะซิตี้ ระยอง', start:'2026-11-14', end:'2026-11-18', status:'checked_out' },
+      { no:'LN-2611-0039', borrower:'วิภา รัตนชัย', items:[6], job:'WO-26-1160', customer:'บจก. ฟาร์มาเฮลท์', site:'ในแล็บ', start:'2026-11-10', end:'2026-11-15', status:'checked_out' },
+      { no:'LN-2611-0045', borrower:'สมชาย ใจดี', items:[4], job:'WO-26-1201', customer:'บจก. โคลด์เชนโลจิสติกส์', site:'ในแล็บ', start:'2026-11-19', end:'2026-11-21', status:'approved' },
+      { no:'LN-2611-0047', borrower:'ธนากร มีสุข', items:[1,7], job:'WO-26-1210', customer:'บมจ. ไทยอิเล็กทรอนิกส์', site:'ในแล็บ', start:'2026-11-18', end:'2026-11-20', status:'pending', created:'2026-11-16' },
+      { no:'LN-2611-0048', borrower:'สมชาย ใจดี', items:[5], job:'WO-26-1215', customer:'บจก. พรีซิชั่นพาร์ท', site:'ในแล็บ', start:'2026-11-20', end:'2026-11-22', status:'pending', created:'2026-11-17' },
+      { no:'LN-2610-0031', borrower:'สมชาย ใจดี', items:[8], job:'WO-26-1098', customer:'บจก. ปิโตรเคมีตะวันออก', site:'มาบตาพุด', start:'2026-10-20', end:'2026-10-24', status:'returned', notified:false },
+      { no:'LN-2610-0027', borrower:'กิตติ ทองดี', items:[8], job:'WO-26-1072', customer:'บจก. นครหลวงสตีล', site:'สระบุรี', start:'2026-10-02', end:'2026-10-06', status:'returned', notified:true },
+      { no:'LN-2609-0019', borrower:'วิภา รัตนชัย', items:[8], job:'WO-26-0981', customer:'บจก. อีสเทิร์นแก๊ส', site:'ชลบุรี', start:'2026-09-08', end:'2026-09-12', status:'returned', notified:false },
+      { no:'LN-2607-0008', borrower:'สมชาย ใจดี', items:[8,3], job:'WO-26-0712', customer:'บจก. ฟาร์มาเฮลท์', site:'ในแล็บ', start:'2026-07-14', end:'2026-07-15', status:'returned', notified:false },
+      { no:'LN-2610-0024', borrower:'สมชาย ใจดี', items:[10], job:'WO-26-1040', customer:'บจก. สยามออโต้พาร์ท', site:'อมตะซิตี้ ระยอง', start:'2026-09-28', end:'2026-10-01', status:'returned' },
+    ],
+
+    activities: [
+      { t:'09:12', who:'อรุณี แสงทอง', what:'จ่ายออก STD-PR-003 ให้สมชาย ใจดี', k:'blue' },
+      { t:'08:40', who:'ดร.กมล ศรีสุข', what:'กักกัน STD-PR-006 เนื่องจากผลสอบเทียบไม่ผ่าน', k:'red' },
+      { t:'เมื่อวาน', who:'ระบบ', what:'แจ้งเตือน LN-2611-0039 เกินกำหนดคืน', k:'orange' },
+      { t:'เมื่อวาน', who:'ประเสริฐ วงศ์ใหญ่', what:'อนุมัติคำขอ LN-2611-0045', k:'green' },
+      { t:'15 พ.ย.', who:'อรุณี แสงทอง', what:'ส่ง STD-TQ-001 สอบเทียบภายนอก', k:'orange' },
+      { t:'14 พ.ย.', who:'วิภา รัตนชัย', what:'Intermediate Check STD-MS-002 ผ่าน', k:'green' },
+    ],
+
+    /* ---------- lifecycle ---------- */
+    init() {
+      try { const s = localStorage.getItem('sems-dark'); this.dark = s ? s === '1' : matchMedia('(prefers-color-scheme: dark)').matches; } catch (e) {}
+      this.$watch('dark', v => { try { localStorage.setItem('sems-dark', v ? '1' : '0'); } catch (e) {} });
+      // ลิงก์ตรง เช่น index.html#qm/oot หรือ #custodian/handover/dark
+      const [r, p, theme] = location.hash.slice(1).split('/');
+      if (this.roles[r]) { this.login(r); if (p) { p === 'detail' ? this.openDetail(1) : this.go(p); } if (theme) this.dark = theme === 'dark'; }
+    },
+    login(r) { this.role = r; this.loggedIn = true; this.go('dashboard'); },
+    switchRole(r) {
+      this.role = r;
+      if (!['detail','cart','more','dashboard','equipment','scan','loans'].includes(this.page) && !this.canSee(this.page)) this.go('dashboard');
+      this.toast('มุมมอง: ' + this.roles[r].label);
+    },
+    go(p) {
+      this.page = p; this.notifOpen = false;
+      if (p === 'scan') { this.scanState = 'idle'; this.scanResult = null; }
+      if (p === 'handover') this.handover.loanNo = null;
+      window.scrollTo({ top: 0 });
+    },
+
+    /* ---------- helpers ---------- */
+    ic(n, c = 'w-5 h-5') { return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" class="${c}">${ICONS[n] || ''}</svg>`; },
+    iso(d) { return d.toISOString().slice(0, 10); },
+    addDays(d, n) { const x = new Date(d + 'T00:00:00Z'); x.setUTCDate(x.getUTCDate() + n); return this.iso(x); },
+    addMonths(d, n) { if (!d) return ''; const x = new Date(d + 'T00:00:00Z'); x.setUTCMonth(x.getUTCMonth() + n); return this.iso(x); },
+    days(d) { return Math.round((new Date(d + 'T00:00:00Z') - new Date(TODAY + 'T00:00:00Z')) / 864e5); },
+    fmt(d) { return d && d !== '-' ? new Date(d + 'T00:00:00Z').toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: '2-digit', timeZone: 'UTC' }) : '-'; },
+    get longDate() { return new Date(TODAY + 'T00:00:00Z').toLocaleDateString('th-TH', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }); },
+    relDays(d) { return d === 0 ? 'วันนี้' : d > 0 ? `อีก ${d} วัน` : `เกิน ${-d} วัน`; },
+    initials(n) { const p = n.replace('ดร.', '').split(' '); return (p[0]?.[0] || '') + (p[1]?.[0] || ''); },
+    eq(id) { return this.equipment.find(e => e.id === id); },
+    st(k) { return this.statuses[k]; },
+    cat(e) { return this.cats[e.cat]; },
+    get me() { return this.roles[this.role]; },
+    get sel() { return this.eq(this.selectedId); },
+    toast(m, t = 'success') { this.toastMsg = m; this.toastType = t; clearTimeout(this.toastTimer); this.toastTimer = setTimeout(() => this.toastMsg = '', 2600); },
+    log(what, k = 'blue') { this.activities.unshift({ t: 'เมื่อสักครู่', who: this.me.name, what, k }); },
+
+    /* ---------- navigation ---------- */
+    get pendingCount() { return this.loans.filter(l => l.status === 'pending').length; },
+    get navItems() {
+      const all = [
+        { id:'dashboard', label:'สรุป', icon:'home', k:'blue', sec:'ทั่วไป', roles:'*' },
+        { id:'equipment', label:'อุปกรณ์', icon:'box', k:'blue', sec:'ทั่วไป', roles:'*' },
+        { id:'scan', label:'สแกน', icon:'scan', k:'gray', sec:'ทั่วไป', roles:'*' },
+        { id:'loans', label: this.role === 'technician' ? 'การยืมของฉัน' : 'รายการยืม', icon:'clipboard', k:'blue', sec:'ทั่วไป', roles:'*' },
+        { id:'cart', label:'รายการยืม (ตะกร้า)', icon:'bag', k:'teal', sec:'ทั่วไป', roles:'*', badge: this.cart.length, hideSide: true },
+        { id:'approvals', label:'รออนุมัติ', icon:'checkCircle', k:'green', sec:'งานคลัง', roles:['supervisor','qm'], badge: this.pendingCount },
+        { id:'handover', label:'จ่ายออก / รับคืน', icon:'arrows', k:'blue', sec:'งานคลัง', roles:['custodian'], badge: this.loans.filter(l => ['approved','checked_out'].includes(l.status)).length },
+        { id:'calibration', label:'สอบเทียบ', icon:'gauge', k:'orange', sec:'คุณภาพ', roles:['custodian','supervisor','qm'] },
+        { id:'oot', label:'ผลกระทบ OOT', icon:'shield', k:'red', sec:'คุณภาพ', roles:['qm'], badge: this.equipment.filter(e => e.status === 'quarantine').length },
+      ];
+      return all.filter(n => n.roles === '*' || n.roles.includes(this.role));
+    },
+    get navSections() {
+      const out = [];
+      this.navItems.filter(n => !n.hideSide).forEach(n => { let s = out.find(x => x.t === n.sec); if (!s) out.push(s = { t: n.sec, items: [] }); s.items.push(n); });
+      return out;
+    },
+    get tabs() {
+      const fourth = this.role === 'custodian'
+        ? { id:'handover', label:'จ่าย/รับคืน', icon:'arrows', badge: 0 }
+        : { id:'loans', label:'การยืม', icon:'clipboard', badge: 0 };
+      const moreBadge = this.canSee('approvals') ? this.pendingCount : 0;
+      return [
+        { id:'dashboard', label:'สรุป', icon:'home' },
+        { id:'equipment', label:'อุปกรณ์', icon:'box' },
+        { id:'scan', label:'สแกน', icon:'scan' },
+        fourth,
+        { id:'more', label:'เพิ่มเติม', icon:'more', badge: moreBadge },
+      ];
+    },
+    get moreItems() { const t = this.tabs.map(x => x.id); return this.navItems.filter(n => !t.includes(n.id)); },
+    tabActive(id) {
+      if (id === 'equipment') return ['equipment','detail'].includes(this.page);
+      if (id === 'more') return this.page === 'more' || (this.moreItems.some(n => n.id === this.page));
+      return this.page === id;
+    },
+    canSee(p) { return this.navItems.some(n => n.id === p); },
+    isActive(id) { return this.page === id || (id === 'equipment' && this.page === 'detail'); },
+    get back() {
+      if (this.page === 'detail') return { label: 'อุปกรณ์', fn: () => this.go('equipment'), desktop: true };
+      if (this.page === 'cart') return { label: 'อุปกรณ์', fn: () => this.go('equipment'), desktop: true };
+      if (this.page === 'handover' && this.handover.loanNo) return { label: 'จ่าย/รับคืน', fn: () => { this.handover.loanNo = null; window.scrollTo({ top: 0 }); }, desktop: true };
+      if (this.moreItems.some(n => n.id === this.page)) return { label: 'เพิ่มเติม', fn: () => this.go('more'), desktop: false };
+      return null;
+    },
+    get pageTitle() {
+      if (this.page === 'detail' && this.sel) return this.sel.name;
+      return ({ dashboard:'สรุป', equipment:'อุปกรณ์', cart:'รายการยืม', loans: this.role === 'technician' ? 'การยืมของฉัน' : 'รายการยืม', approvals:'รออนุมัติ', scan:'สแกน', handover: this.handover.loanNo ? (this.handover.mode === 'out' ? 'จ่ายออก' : 'รับคืน') : 'จ่ายออก / รับคืน', calibration:'สอบเทียบ', oot:'ผลกระทบ OOT', more:'เพิ่มเติม' })[this.page];
+    },
+
+    /* ---------- calibration state ---------- */
+    calState(e) { const d = this.days(e.calDue); return d < 0 ? 'expired' : d <= 30 ? 'soon' : d <= 60 ? 'warn' : 'ok'; },
+    calTone(e) { return ({ expired:'red', soon:'orange', warn:'yellow', ok:'green' })[this.calState(e)]; },
+    calText(e) { return ({ expired:'c-red', soon:'c-orange', warn:'c-yellow', ok:'t2' })[this.calState(e)]; },
+    calRemainPct(e) { const total = (new Date(e.calDue) - new Date(e.calDate)) / 864e5; return Math.max(0, Math.min(100, this.days(e.calDue) / total * 100)); },
+    calHistory(e) {
+      const h = [{ date: e.calDate, lab: e.lab, cert: e.cert, result: 'pass' }];
+      if (e.oot) h.unshift({ date: e.oot.found, lab: e.lab, cert: e.cert.replace(/-\d\d-/, '-26-').replace(/\d{4}$/, '1290'), result: 'fail' });
+      for (let i = 1; i <= 2; i++) h.push({ date: this.addMonths(e.calDate, -e.interval * i), lab: e.lab, cert: e.cert.replace(/\d{4}$/, String(1000 + e.id * 37 + i * 211).slice(-4)), result: 'pass' });
+      return h;
+    },
+    get detailStrip() {
+      const e = this.sel; if (!e) return [];
+      const d = this.days(e.calDue);
+      return [
+        { cap:'สอบเทียบ', val: d < 0 ? 'หมดอายุ' : d + ' วัน', sub: 'ถึง ' + this.fmt(e.calDue), cls: this.calText(e) === 't2' ? 't2' : this.calText(e) },
+        { cap:'ระดับ', val: e.level, sub:'Standard' },
+        { cap:'หมวด', val: this.cat(e).th, sub: e.cat },
+        { cap:'ยืมสูงสุด', val: e.maxDays, sub:'วัน' },
+        { cap:'ใช้งาน', val: e.offsite ? 'On-site' : 'Lab', sub: e.offsite ? 'นอกสถานที่ได้' : 'ในแล็บเท่านั้น' },
+        { cap:'สถานะ', val: this.st(e.status).l, sub: e.loc, cls: 'c-' + this.st(e.status).k },
+      ];
+    },
+
+    /* ---------- borrowing rules ---------- */
+    canBorrow(e) {
+      if (['quarantine','out_cal','repair'].includes(e.status)) return { ok: false, short: 'ยืมไม่ได้', reason: `อุปกรณ์อยู่ในสถานะ “${this.st(e.status).l}”` };
+      if (this.days(e.calDue) < 0) return { ok: false, short: 'Cal หมดอายุ', reason: 'อุปกรณ์หมดอายุการสอบเทียบแล้ว' };
+      return { ok: true, short: '', reason: '' };
+    },
+    inCart(id) { return this.cart.includes(id); },
+    toggleCart(id) {
+      if (this.inCart(id)) { this.cart = this.cart.filter(x => x !== id); this.toast('นำออกจากรายการยืมแล้ว'); }
+      else { this.cart.push(id); this.toast('เพิ่ม ' + this.eq(id).asset + ' แล้ว'); }
+    },
+    overlap(a1, a2, b1, b2) { return a1 <= b2 && b1 <= a2; },
+    busyLoans(id, s, e, exclude) {
+      return this.loans.filter(l => l.no !== exclude && ['pending','approved','checked_out'].includes(l.status) && l.items.includes(id) &&
+        this.overlap(s, e, l.start, (l.status === 'checked_out' && l.end < TODAY) ? '2099-12-31' : l.end));
+    },
+    get loanSpan() { return Math.max(0, this.days(this.form.end) - this.days(this.form.start) + 1); },
+    itemIssues(e, start, end, exclude, site) {
+      const out = [];
+      if (e.calDue < end) out.push({ t: 'error', m: `Cal หมดอายุ ${this.fmt(e.calDue)} ก่อนวันคืน` });
+      else if (this.days(e.calDue) <= 30) out.push({ t: 'warn', m: `Cal จะหมดอายุ ${this.fmt(e.calDue)} (${this.relDays(this.days(e.calDue))})` });
+      const span = this.days(end) - this.days(start) + 1;
+      if (span > e.maxDays) out.push({ t: 'error', m: `ยืมได้สูงสุด ${e.maxDays} วัน (ขอ ${span} วัน)` });
+      this.busyLoans(e.id, start, end, exclude).forEach(l => out.push({ t: 'error', m: l.status === 'checked_out' && l.end < TODAY ? `ยังไม่ถูกคืนจาก ${l.no}` : `ชนกับ ${l.no} (${this.fmt(l.start)} – ${this.fmt(l.end)})` }));
+      if (site === 'onsite' && !e.offsite) out.push({ t: 'error', m: 'ไม่อนุญาตให้นำออกนอกสถานที่' });
+      if (e.approval) out.push({ t: 'info', m: 'ต้องได้รับอนุมัติจากหัวหน้างาน' });
+      return out;
+    },
+    get cartChecks() { return this.cart.map(id => { const e = this.eq(id); return { e, issues: this.itemIssues(e, this.form.start, this.form.end, null, this.form.site) }; }); },
+    get cartErrors() { return this.cartChecks.filter(c => c.issues.some(i => i.t === 'error')).length; },
+    get cartNeedsApproval() { return this.cart.some(id => this.eq(id).approval); },
+    get globalIssues() {
+      const g = [];
+      if (this.form.start < TODAY) g.push('วันที่รับต้องไม่ย้อนหลัง');
+      if (this.form.end < this.form.start) g.push('วันที่คืนต้องไม่ก่อนวันที่รับ');
+      if (!this.form.job.trim()) g.push('กรอกเลขที่ใบงานก่อนส่ง');
+      return g;
+    },
+    issueCls(t) { return ({ error:'c-red', warn:'c-orange', info:'t2', ok:'c-green' })[t]; },
+    submitLoan() {
+      const status = this.cartNeedsApproval ? 'pending' : 'approved';
+      const no = 'LN-2611-00' + (this.loanSeq++);
+      this.loans.unshift({ no, borrower: this.me.name, items: [...this.cart], job: this.form.job, customer: this.form.customer || '-', site: this.form.site === 'onsite' ? (this.form.siteName || 'นอกสถานที่') : 'ในแล็บ', start: this.form.start, end: this.form.end, status, created: TODAY });
+      if (status === 'approved') this.cart.forEach(id => { const e = this.eq(id); if (e.status === 'available') e.status = 'reserved'; });
+      this.log('ส่งคำขอยืม ' + no);
+      this.toast(status === 'pending' ? `ส่งคำขอ ${no} แล้ว` : `จองแล้ว · รับได้ ${this.fmt(this.form.start)}`);
+      this.cart = []; this.form.job = ''; this.form.customer = ''; this.form.purpose = '';
+      this.go('loans'); this.loanTab = status === 'pending' ? 'pending' : 'active';
+    },
+
+    /* ---------- loans ---------- */
+    ls(l) {
+      const key = (l.status === 'checked_out' && this.days(l.end) < 0) ? 'overdue' : l.status;
+      return { key, ...({
+        pending:{ l:'รออนุมัติ', k:'orange' }, approved:{ l:'รอรับอุปกรณ์', k:'purple' }, checked_out:{ l:'กำลังยืม', k:'blue' },
+        overdue:{ l:'เกินกำหนดคืน', k:'red' }, returned:{ l:'คืนแล้ว', k:'green' }, rejected:{ l:'ไม่อนุมัติ', k:'red' }, cancelled:{ l:'ยกเลิก', k:'gray' },
+      })[key] };
+    },
+    loanStep(l) { return ({ pending:1, approved:2, checked_out:3, returned:4 })[l.status] || 0; },
+    get visibleLoans() { return this.role === 'technician' ? this.loans.filter(l => l.borrower === this.me.name) : this.loans; },
+    loansByTab(t) {
+      const m = { active:['checked_out','approved'], pending:['pending'], history:['returned','rejected','cancelled'] }[t];
+      return this.visibleLoans.filter(l => m.includes(l.status)).sort((a, b) => (this.ls(b).key === 'overdue') - (this.ls(a).key === 'overdue'));
+    },
+    activeLoanOf(id) { return this.loans.find(l => l.items.includes(id) && ['checked_out','approved'].includes(l.status)); },
+    approve(l) {
+      l.status = 'approved';
+      l.items.forEach(id => { const e = this.eq(id); if (e.status === 'available') e.status = 'reserved'; });
+      this.log('อนุมัติคำขอ ' + l.no, 'green'); this.toast('อนุมัติ ' + l.no + ' แล้ว');
+    },
+    releaseItems(l) { l.items.forEach(id => { const e = this.eq(id); if (e.status === 'reserved') e.status = 'available'; }); },
+    requestReturn(l) { l.returnRequested = true; this.toast('แจ้งคืนแล้ว · นำอุปกรณ์ไปที่ห้อง Standard'); },
+    openPickup(l) { this.modal = { open: true, type: 'pickup', loan: l, eq: null, date: '' }; },
+    openExtend(l) { this.modal = { open: true, type: 'extend', loan: l, eq: null, date: this.addDays(l.end < TODAY ? TODAY : l.end, 2) }; },
+    get extendIssues() {
+      const l = this.modal.loan; if (!l || !this.modal.date) return [];
+      const out = [];
+      if (this.modal.date <= l.end) out.push({ t: 'error', m: 'วันที่ใหม่ต้องหลังวันคืนเดิม' });
+      l.items.forEach(id => { const e = this.eq(id);
+        this.itemIssues(e, l.start, this.modal.date, l.no, 'inhouse').filter(i => i.t === 'error').forEach(i => out.push({ t: 'error', m: e.asset + ': ' + i.m }));
+      });
+      if (!out.length) out.push({ t: 'ok', m: 'ต่ออายุได้ อายุสอบเทียบและช่วงเวลาไม่ติดปัญหา' });
+      return out;
+    },
+    confirmExtend() { const l = this.modal.loan; l.end = this.modal.date; this.modal.open = false; this.log('ต่ออายุ ' + l.no + ' ถึง ' + this.fmt(l.end)); this.toast('ต่ออายุถึง ' + this.fmt(l.end) + ' แล้ว'); },
+
+    /* ---------- scan ---------- */
+    simulateScan() {
+      const order = [2, 7, 3, 4, 8, 6, 10];
+      const e = this.eq(order[this.scanIdx++ % order.length]);
+      this.scanState = 'done'; if (navigator.vibrate) navigator.vibrate(40);
+      setTimeout(() => { this.scanResult = e; }, 260);
+      setTimeout(() => { this.scanState = 'idle'; }, 1100);
+    },
+    manualScan() {
+      const e = this.equipment.find(x => x.asset.toLowerCase() === this.manualAsset.trim().toLowerCase());
+      if (e) this.scanResult = e; else this.toast('ไม่พบรหัสทรัพย์สินนี้', 'error');
+    },
+
+    /* ---------- handover ---------- */
+    get handoverGroups() {
+      return [
+        { t:'รอจ่ายออก', m:'out', list: this.loans.filter(l => l.status === 'approved') },
+        { t:'รอรับคืน', m:'in', list: this.loans.filter(l => l.status === 'checked_out').sort((a,b) => a.end.localeCompare(b.end)) },
+      ];
+    },
+    get hoLoan() { return this.loans.find(l => l.no === this.handover.loanNo); },
+    hoChecklist(e) { return [...e.accessories, 'สภาพภายนอกปกติ', 'สติกเกอร์สอบเทียบและซีลครบ', 'ทดสอบเปิดเครื่องได้']; },
+    get hoProgress() {
+      const l = this.hoLoan; if (!l) return { done: 0, total: 0 };
+      let total = 0, done = 0;
+      l.items.forEach(id => this.hoChecklist(this.eq(id)).forEach(i => { total++; if (this.handover.checks[id + '|' + i]) done++; }));
+      return { done, total };
+    },
+    checkAll() { const l = this.hoLoan; l.items.forEach(id => this.hoChecklist(this.eq(id)).forEach(i => this.handover.checks[id + '|' + i] = true)); },
+    startHandover(no, mode) {
+      this.page = 'handover'; this.notifOpen = false; window.scrollTo({ top: 0 });
+      this.handover = { mode, loanNo: no, checks: {}, condition: 'ok', note: '', signed: false, photos: [] };
+      setTimeout(() => this.initSig(), 80);
+    },
+    addPhotos(ev) { [...ev.target.files].forEach(f => this.handover.photos.push(URL.createObjectURL(f))); },
+    initSig() {
+      const c = this.$refs.sig; if (!c) return;
+      const r = c.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+      c.width = r.width * dpr; c.height = r.height * dpr;
+      const ctx = c.getContext('2d'); ctx.scale(dpr, dpr);
+      ctx.lineWidth = 2.2; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = this.dark ? '#fff' : '#000';
+      let drawing = false;
+      c.onpointerdown = e => { drawing = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); c.setPointerCapture(e.pointerId); };
+      c.onpointermove = e => { if (!drawing) return; ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); this.handover.signed = true; };
+      c.onpointerup = c.onpointercancel = () => { drawing = false; };
+    },
+    clearSig() { const c = this.$refs.sig; if (c) { c.getContext('2d').clearRect(0, 0, c.width, c.height); this.handover.signed = false; } },
+    confirmHandover() {
+      const l = this.hoLoan;
+      if (this.handover.mode === 'out') {
+        l.status = 'checked_out'; l.items.forEach(id => this.eq(id).status = 'on_loan');
+        this.log('จ่ายออก ' + l.items.map(id => this.eq(id).asset).join(', ') + ' ให้' + l.borrower, 'blue');
+        this.toast('จ่ายออก ' + l.no + ' แล้ว');
+      } else {
+        l.status = 'returned'; l.returnedAt = TODAY;
+        let msg = 'รับคืน ' + l.no + ' แล้ว';
+        l.items.forEach(id => { const e = this.eq(id);
+          if (this.handover.condition === 'damaged') { e.status = 'quarantine'; this.ootId = e.id; msg = e.asset + ' ถูกกักกันแล้ว'; }
+          else if (e.check) { e.status = 'checking'; msg = 'รับคืนแล้ว · รอ Intermediate Check'; }
+          else e.status = 'available';
+        });
+        this.log('รับคืน ' + l.no + ' จาก' + l.borrower, 'green');
+        this.toast(msg, this.handover.condition === 'damaged' ? 'error' : 'success');
+      }
+      this.handover.loanNo = null; window.scrollTo({ top: 0 });
+    },
+
+    /* ---------- calibration ---------- */
+    get calSummary() {
+      const c = s => this.equipment.filter(e => this.calState(e) === s).length;
+      return [
+        { k:'all', l:'ทั้งหมด', n:this.equipment.length, tone:'gray' },
+        { k:'expired', l:'หมดอายุ', n:c('expired'), tone:'red' },
+        { k:'soon', l:'≤ 30 วัน', n:c('soon'), tone:'orange' },
+        { k:'warn', l:'≤ 60 วัน', n:c('warn'), tone:'yellow' },
+      ];
+    },
+    get calRows() { return this.equipment.filter(e => this.calFilter === 'all' || this.calState(e) === this.calFilter).sort((a, b) => a.calDue.localeCompare(b.calDue)); },
+    openCal(e) { this.calForm = { date: TODAY, lab: e.lab, cert: '', result: 'pass' }; this.modal = { open: true, type: 'cal', eq: e, loan: null, date: '' }; },
+    saveCal() {
+      const e = this.modal.eq, f = this.calForm;
+      if (f.result === 'pass') {
+        e.calDate = f.date; e.calDue = this.addMonths(f.date, e.interval); e.lab = f.lab; e.cert = f.cert || e.cert; delete e.oot;
+        if (['out_cal','quarantine','checking'].includes(e.status)) e.status = 'available';
+        this.log('บันทึกผลสอบเทียบ ' + e.asset + ' ผ่าน', 'green');
+        this.toast('บันทึกแล้ว · ครบกำหนดถัดไป ' + this.fmt(e.calDue));
+        this.modal.open = false;
+      } else {
+        e.status = 'quarantine'; e.oot = { found: f.date, detail: 'ผลสอบเทียบวันที่ ' + this.fmt(f.date) + ' ไม่ผ่านเกณฑ์ที่กำหนด' };
+        this.ootId = e.id; this.modal.open = false;
+        this.log('ผลสอบเทียบ ' + e.asset + ' ไม่ผ่าน · กักกัน', 'red');
+        this.toast(e.asset + ' ถูกกักกันแล้ว', 'error');
+        if (this.canSee('oot')) this.go('oot');
+      }
+    },
+
+    /* ---------- OOT ---------- */
+    get ootEq() { const e = this.eq(this.ootId); return e && e.status === 'quarantine' ? e : this.equipment.find(x => x.status === 'quarantine'); },
+    get ootAffected() {
+      const e = this.ootEq; if (!e) return [];
+      const to = e.oot?.found || TODAY;
+      return this.loans.filter(l => l.items.includes(e.id) && ['returned','checked_out'].includes(l.status) && this.overlap(l.start, l.end, e.calDate, to)).sort((a, b) => b.start.localeCompare(a.start));
+    },
+
+    /* ---------- detail ---------- */
+    openDetail(id) { this.selectedId = id; this.detailTab = 'info'; this.go('detail'); },
+    avail(e) {
+      const dows = ['อา','จ','อ','พ','พฤ','ศ','ส'];
+      return Array.from({ length: 14 }, (_, i) => {
+        const d = this.addDays(TODAY, i), dt = new Date(d + 'T00:00:00Z');
+        const busy = this.busyLoans(e.id, d, d).length > 0;
+        const off = e.calDue < d || ['quarantine','out_cal','repair'].includes(e.status);
+        return { iso: d, dow: dows[dt.getUTCDay()], day: dt.getUTCDate(), cls: (i === 0 ? 'today ' : '') + (off ? 'off' : busy ? 'busy' : '') };
+      });
+    },
+    qr(text) {
+      let h = 2166136261; for (const ch of text) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; }
+      const rnd = () => { h ^= h << 13; h >>>= 0; h ^= h >>> 17; h ^= h << 5; h >>>= 0; return h / 4294967296; };
+      const n = 25; let r = '';
+      const inF = (x, y) => (x < 8 && y < 8) || (x > n - 9 && y < 8) || (x < 8 && y > n - 9);
+      for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (!inF(x, y) && rnd() > 0.52) r += `<rect x="${x}" y="${y}" width="1" height="1"/>`;
+      const f = (x, y) => `<rect x="${x}" y="${y}" width="7" height="7" rx="1.4"/><rect x="${x+1}" y="${y+1}" width="5" height="5" rx=".8" fill="#fff"/><rect x="${x+2}" y="${y+2}" width="3" height="3" rx=".6"/>`;
+      return `<svg viewBox="0 0 ${n} ${n}" class="w-full h-full" shape-rendering="crispEdges" fill="currentColor">${r}${f(0,0)}${f(n-7,0)}${f(0,n-7)}</svg>`;
+    },
+
+    /* ---------- summary ---------- */
+    get stats() {
+      const overdue = this.loans.filter(l => this.ls(l).key === 'overdue').length;
+      const calSoon = this.equipment.filter(e => ['soon','expired'].includes(this.calState(e))).length;
+      return [
+        { label:'พร้อมใช้งาน', value:this.equipment.filter(e => e.status === 'available').length, unit:'ชิ้น', icon:'checkCircle', k:'green', go:'equipment' },
+        { label:'กำลังถูกยืม', value:this.equipment.filter(e => e.status === 'on_loan').length, unit:'ชิ้น', icon:'arrows', k:'blue', go: this.role === 'custodian' ? 'handover' : 'loans' },
+        { label:'เกินกำหนดคืน', value:overdue, unit:'รายการ', icon:'clock', k:'red', go: this.role === 'custodian' ? 'handover' : 'loans' },
+        { label:'ใกล้หมด Cal', value:calSoon, unit:'ชิ้น', icon:'gauge', k:'orange', go: this.canSee('calibration') ? 'calibration' : 'equipment' },
+      ];
+    },
+    get statusDist() { return Object.entries(this.statuses).map(([k, s]) => ({ ...s, n: this.equipment.filter(e => e.status === k).length })).filter(d => d.n); },
+    get calSoonList() { return this.equipment.filter(e => this.days(e.calDue) <= 60).sort((a, b) => a.calDue.localeCompare(b.calDue)).slice(0, 5); },
+    get tasks() {
+      const t = [], assets = l => l.items.map(id => this.eq(id).asset).join(', ');
+      this.visibleLoans.filter(l => l.status === 'checked_out').forEach(l => {
+        const d = this.days(l.end);
+        if (d < 0) t.push({ icon:'clock', k:'red', title:`เกินกำหนดคืน ${-d} วัน`, sub:`${assets(l)} · ${l.borrower}`, cta: this.role === 'custodian' ? 'รับคืน' : 'ดู', action: () => this.role === 'custodian' ? this.startHandover(l.no, 'in') : (this.go('loans'), this.loanTab = 'active') });
+        else if (d <= 1) t.push({ icon:'calendar', k:'orange', title:`ครบกำหนดคืน${d === 0 ? 'วันนี้' : 'พรุ่งนี้'}`, sub:`${assets(l)} · ${l.no}`, cta:'ต่ออายุ', action: () => this.openExtend(l) });
+      });
+      if (this.canSee('approvals')) this.loans.filter(l => l.status === 'pending').forEach(l => t.push({ icon:'checkCircle', k:'green', title:`คำขอจาก${l.borrower}`, sub:`${assets(l)} · ${l.no}`, cta:'พิจารณา', action: () => this.go('approvals') }));
+      this.visibleLoans.filter(l => l.status === 'approved' && this.days(l.start) <= 2).forEach(l => t.push({ icon:'arrowUp', k:'purple', title: this.role === 'custodian' ? `เตรียมจ่ายออกให้${l.borrower}` : `นัดรับอุปกรณ์ ${this.fmt(l.start)}`, sub:`${assets(l)} · ${l.no}`, cta: this.role === 'custodian' ? 'จ่ายออก' : 'QR', action: () => this.role === 'custodian' ? this.startHandover(l.no, 'out') : this.openPickup(l) }));
+      if (this.role !== 'technician') {
+        this.equipment.filter(e => e.status === 'checking').forEach(e => t.push({ icon:'gauge', k:'yellow', title:`Intermediate Check ${e.asset}`, sub:e.name, cta:'บันทึก', action: () => this.openCal(e) }));
+        this.equipment.filter(e => e.status === 'quarantine').forEach(e => t.push({ icon:'shield', k:'red', title:`ประเมินผลกระทบ ${e.asset}`, sub:e.name, cta:'ดู', action: () => { this.ootId = e.id; this.go(this.canSee('oot') ? 'oot' : 'equipment'); } }));
+      }
+      return t;
+    },
+    get notifications() {
+      return [
+        { icon:'clock', k:'red', title:'เกินกำหนดคืน', t:'08:00', sub:'LN-2611-0039 · Weight Set F1 · วิภา รัตนชัย', go: this.role === 'custodian' ? 'handover' : 'loans' },
+        { icon:'gauge', k:'orange', title:'Cal ใกล้หมดอายุ', t:'07:30', sub:'STD-EL-004 Keysight 34470A · อีก 11 วัน', go: this.canSee('calibration') ? 'calibration' : 'equipment' },
+        { icon:'checkCircle', k:'green', title:`คำขอรออนุมัติ ${this.pendingCount} รายการ`, t:'เมื่อวาน', sub:'ธนากร มีสุข, สมชาย ใจดี', go: this.canSee('approvals') ? 'approvals' : 'loans' },
+        { icon:'shield', k:'red', title:'ผลสอบเทียบไม่ผ่าน', t:'เมื่อวาน', sub:'STD-PR-006 · ต้องประเมินผลกระทบงานย้อนหลัง', go: this.canSee('oot') ? 'oot' : 'equipment' },
+      ];
+    },
+
+    get filteredEq() {
+      const q = this.q.trim().toLowerCase();
+      return this.equipment.filter(e =>
+        (this.catFilter === 'all' || e.cat === this.catFilter) &&
+        (this.statusFilter === 'all' || e.status === this.statusFilter) &&
+        (!q || [e.asset, e.name, e.brand, e.model, e.sn].join(' ').toLowerCase().includes(q)));
+    },
+  };
+}
+</script>
+</body>
+</html>
